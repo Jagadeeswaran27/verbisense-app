@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:verbisense/providers/auth_provider.dart';
+import 'package:verbisense/screens/chat_screen.dart';
 import 'package:verbisense/screens/home_screen.dart';
 
 class AuthWrapper extends StatelessWidget {
@@ -10,7 +11,7 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     if (authProvider.isAuthenticated) {
-      return const Text("Authenticated");
+      return const ChatScreen();
     }
     return const HomeScreen();
   }

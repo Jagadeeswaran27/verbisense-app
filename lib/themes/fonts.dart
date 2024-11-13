@@ -42,7 +42,11 @@ class ThemeFonts {
             fontWeight: FontWeight.w600,
             color: ThemeColors.black,
           ),
-          titleSmall: baseTheme.textTheme.titleSmall!.copyWith(),
+          titleSmall: baseTheme.textTheme.titleSmall!.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: ThemeColors.white,
+          ),
           bodyLarge: baseTheme.textTheme.bodyLarge!.copyWith(
             fontSize: 18,
             fontWeight: FontWeight.w500,
@@ -51,7 +55,7 @@ class ThemeFonts {
           // body copy
           bodyMedium: baseTheme.textTheme.bodyMedium!.copyWith(
             fontSize: 16,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
             color: ThemeColors.black,
           ),
           // body text 2

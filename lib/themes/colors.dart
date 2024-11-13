@@ -5,7 +5,7 @@ import 'package:pigment/pigment.dart';
 class ThemeColors {
   ThemeColors._();
 
-  static final Color primary = Pigment.fromString('#2BAFFC');
+  static final Color primary = Pigment.fromString('#131827');
   static final Color darkBlue = Pigment.fromString('#0A284D');
   static final Color mainYellow = Pigment.fromString('#FFCD62');
   static final Color black = Pigment.fromString('#000000');

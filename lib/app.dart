@@ -13,6 +13,7 @@ class VerbisenseApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: Themes.buildLightTheme(context),
         routes: Routes.buildRoutes,
         initialRoute: Routes.initialRoute,
