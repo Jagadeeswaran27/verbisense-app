@@ -15,8 +15,8 @@ class VerbisenseApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: Themes.buildLightTheme(context),
-        routes: Routes.buildRoutes,
         initialRoute: Routes.initialRoute,
+        routes: Routes.buildRoutes,
       ),
     );
   }
