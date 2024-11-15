@@ -18,4 +18,5 @@ class ThemeColors {
   static const Color transparent = Colors.transparent;
   static final Color cardBorder = Pigment.fromString('#C9EBFF');
   static final Color red = Pigment.fromString('#D94646');
+  static final Color chatInput = Pigment.fromString('#f3f4f6');
 }

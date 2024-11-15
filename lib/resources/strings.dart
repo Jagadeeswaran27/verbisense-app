@@ -24,4 +24,9 @@ class Strings {
   static const String emailVerificationSent =
       'Email Verification Sent. Check your email for verification link';
   static const String verifyYourEmail = 'Verify your email';
+  static const String verbisense = 'VerbiSense';
+  static const String account = 'Account';
+  static const String logout = 'Logout';
+  static const String about = 'About';
+  static const String askAQuestion = 'Ask a question...';
 }

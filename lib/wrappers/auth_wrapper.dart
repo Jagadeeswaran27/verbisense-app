@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:verbisense/providers/auth_provider.dart';
 import 'package:verbisense/screens/chat_screen.dart';
 import 'package:verbisense/screens/home_screen.dart';
+import 'package:verbisense/themes/colors.dart';
+import 'package:verbisense/widgets/loaders/dots_triangle/dots_traingle.dart';
 
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
@@ -12,9 +14,9 @@ class AuthWrapper extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
 
     if (authProvider.isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: DotsTriangle(size: 70, color: ThemeColors.black),
         ),
       );
     }
