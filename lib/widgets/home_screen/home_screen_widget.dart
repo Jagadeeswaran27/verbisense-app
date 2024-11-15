@@ -10,11 +10,15 @@ class HomeScreenWidget extends StatelessWidget {
   const HomeScreenWidget({super.key});
 
   void navigateToLogin(BuildContext context) {
-    Navigator.of(context).pushNamed(Routes.login);
+    Navigator.of(context).pushNamed(
+      Routes.login,
+    );
   }
 
   void navigateToSignup(BuildContext context) {
-    Navigator.of(context).pushNamed(Routes.signup);
+    Navigator.of(context).pushNamed(
+      Routes.signup,
+    );
   }
 
   @override
@@ -24,7 +28,7 @@ class HomeScreenWidget extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          width: screenSize.width * 0.8,
+          width: screenSize.width * 0.85,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
