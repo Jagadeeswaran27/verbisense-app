@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:verbisense/themes/colors.dart';
 
 class FormInput extends StatelessWidget {
-  const FormInput(
-      {super.key,
-      this.label,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.validator,
-      this.hintText,
-      this.onSaved,
-      this.keyboardType,
-      this.onChanged,
-      this.obscureText = false,
-      this.autofillHints});
+  const FormInput({
+    super.key,
+    this.label,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.validator,
+    this.hintText,
+    this.onSaved,
+    this.keyboardType,
+    this.onChanged,
+    this.obscureText = false,
+    this.autofillHints,
+    this.initialValue,
+    this.readOnly = false,
+    this.onIconTap,
+    this.controller,
+  });
 
   final String? label;
   final TextInputType? keyboardType;
@@ -25,13 +30,20 @@ class FormInput extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final Widget? suffixIcon;
   final String? hintText;
+  final bool readOnly;
+  final String? initialValue;
+  final void Function()? onIconTap;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: keyboardType,
       autofillHints: autofillHints,
+      controller: controller,
+      initialValue: initialValue,
       obscureText: obscureText ?? false,
+      readOnly: readOnly,
       decoration: InputDecoration(
         contentPadding:
             const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
@@ -53,9 +65,13 @@ class FormInput extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(10.0),
         ),
-        prefixIcon: prefixIcon,
+        prefixIcon: prefixIcon != null
+            ? GestureDetector(onTap: onIconTap, child: prefixIcon)
+            : null,
+        suffixIcon: suffixIcon != null
+            ? GestureDetector(onTap: onIconTap, child: suffixIcon)
+            : null,
         prefixIconColor: ThemeColors.gray200,
-        suffixIcon: suffixIcon,
         suffixIconColor: ThemeColors.black200,
         label: label != null
             ? Padding(

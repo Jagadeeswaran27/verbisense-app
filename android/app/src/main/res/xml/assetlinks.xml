@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<asset-links xmlns:android="http://schemas.android.com/apk/res/android">
+    <asset-link>
+        <relation>delegate_permission/common.handle_all_urls</relation>
+        <target>
+            <namespace>android_app</namespace>
+            <package_name>com.example.verbisense</package_name>
+            <sha256-cert-fingerprints>
+                <item>E0:19:48:13:99:87:EF:48:CA:DD:FB:3B:39:85:A8:B6:F7:FE:CE:E5:21:BB:63:84:8B:FA:86:B0:03:47:C2:17</item>
+            </sha256-cert-fingerprints>
+        </target>
+    </asset-link>
+</asset-links>

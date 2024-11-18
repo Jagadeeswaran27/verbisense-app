@@ -6,6 +6,7 @@ class Strings {
       'Your AI-powered question answering assistant';
   static const String login = 'Log in';
   static const String signup = 'Sign up';
+  static const String name = 'Name';
   static const String loginIntoYourAccount = 'Login into your account';
   static const String createYourAccount = 'Create your account';
   static const String emailAddress = 'Email Address';
@@ -26,7 +27,50 @@ class Strings {
   static const String verifyYourEmail = 'Verify your email';
   static const String verbisense = 'VerbiSense';
   static const String account = 'Account';
+  static const String personalInformation = 'Personal Information';
+  static const String accountSettings = 'Account Settings';
   static const String logout = 'Logout';
   static const String about = 'About';
   static const String askAQuestion = 'Ask a question...';
+  static const String chatScreen = 'Chat Screen';
+  static const String currentCapabilites = 'Current Capabilities';
+  static const String currentCapabilitesDescription =
+      'Welcome to Verbisense, your ultimate document query system! We empower users to effortlessly interact with diverse media formats, delivering accurate, context-rich responses.';
+  static const String textDocuments = 'Text Documents';
+  static const String videoAnalysis = 'Video Analysis';
+  static const String audioTranscription = 'Audio Transcription';
+  static const String imageProcessing = 'Image Processing';
+  static const String contextualResponses = 'Contextual Responses';
+  static const String textDocumentDescription =
+      'Process PDFs, TXT files, and DOCX documents with ease.';
+  static const String videoAnalysisDescription =
+      'Extract information and insights from video content.';
+  static const String audioTranscriptionDescription =
+      'Accurately transcribe and analyze audio files.';
+  static const String imageProcessingDescription =
+      'Extract information from images and graphics.';
+  static const String contextualResponsesDescription =
+      'Deliver accurate, context-rich answers to queries.';
+  static const String futureEnhancements = 'Future Enhancements';
+  static const String futureEnhancementsDescription =
+      'Exciting enhancements are on the horizon! We\'re constantly innovating to redefine how you access and utilize information.';
+  static const String advancedImageRecognition = 'Advanced Image Recognition';
+  static const String inDepthVedioAnalysis = 'In-depth Video Analysis';
+  static const String advancedImageRecognitionDescription =
+      'Implement cutting-edge image recognition technology for more detailed and accurate image analysis.';
+  static const String inDepthVedioAnalysisDescription =
+      'Enhance video analysis capabilities to extract deeper insights and perform complex scene analysis.';
+  static const String joinUs = 'Join Us on This Journey of Innovation';
+  static const String thankYouForChoosing =
+      'Thank you for choosing Verbisense — let\'s explore together!';
+  static const String startExploringNow = 'Start Exploring Now';
+  static const String askMeAnything = 'Ask me anything!';
+  static const String changePassword = 'Change Password';
+  static const String currentPassword = 'Current Password';
+  static const String newPassword = 'New Password';
+  static const String passwordChanged = 'Password Changed';
+  static const String passwordChangeFailed = 'Password Change Failed';
+  static const String userNameUpdated = 'User Name Updated';
+  static const String userNameUpdateFailed = 'User Name Update Failed';
+  static const String sameUserName = 'Same User Name!';
 }

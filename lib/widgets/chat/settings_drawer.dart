@@ -1,11 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:verbisense/resources/strings.dart';
+import 'package:verbisense/routes/routes.dart';
 
 class SettingsDrawer extends StatelessWidget {
-  const SettingsDrawer({super.key, required this.logout});
+  const SettingsDrawer({
+    super.key,
+    required this.logout,
+    required this.closeSettingsDrawer,
+  });
+  final void Function() closeSettingsDrawer;
   final void Function() logout;
-  void navigateToAccount() {
-    // Navigate to the account screen
+  void navigateToAccount(BuildContext context) {
+    closeSettingsDrawer();
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            Routes.accountScreen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const curve = Curves.easeInOut;
+
+          // Define a scale transition
+          final scaleTween = Tween<double>(begin: 0.8, end: 1.0)
+              .chain(CurveTween(curve: curve));
+          final scaleAnimation = animation.drive(scaleTween);
+
+          // Define a fade transition
+          final opacityTween = Tween<double>(begin: 0.0, end: 1.0)
+              .chain(CurveTween(curve: curve));
+          final opacityAnimation = animation.drive(opacityTween);
+
+          return FadeTransition(
+            opacity: opacityAnimation,
+            child: ScaleTransition(
+              scale: scaleAnimation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 500),
+      ),
+    );
   }
 
   @override
@@ -24,7 +58,7 @@ class SettingsDrawer extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: navigateToAccount,
+              onTap: () => navigateToAccount(context),
               child: const Row(
                 children: [
                   Icon(Icons.account_circle_outlined),

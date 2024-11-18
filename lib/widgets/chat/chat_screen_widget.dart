@@ -3,6 +3,7 @@ import 'package:verbisense/widgets/chat/custom_app_bar.dart';
 import 'package:verbisense/widgets/chat/custom_drawer.dart';
 import 'package:verbisense/widgets/chat/settings_drawer.dart';
 import 'package:verbisense/widgets/chat/chat_input.dart';
+import 'package:verbisense/widgets/chat/welcome_string_widget.dart';
 
 class ChatScreenWidget extends StatefulWidget {
   const ChatScreenWidget({
@@ -49,21 +50,8 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
             Column(
               children: [
                 CustomAppBar(toggleSettingsDrawer: _toggleSettingsDrawer),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: SizedBox(
-                      width: screenSize.width,
-                      child: Column(
-                        children: List.generate(
-                          100,
-                          (index) => const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text("Chat Screen"),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                const Expanded(
+                  child: WelcomeStringWidget(),
                 ),
                 const ChatInput(),
               ],
@@ -73,6 +61,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
                 top: kToolbarHeight + 30,
                 right: 26,
                 child: SettingsDrawer(
+                  closeSettingsDrawer: _closeSettingsDrawer,
                   logout: widget.logout,
                 ),
               ),

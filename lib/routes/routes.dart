@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:verbisense/screens/about_us_screen.dart';
+import 'package:verbisense/screens/account_screen.dart';
 
 import 'package:verbisense/screens/chat_screen.dart';
 import 'package:verbisense/screens/home_screen.dart';
@@ -14,16 +16,21 @@ class Routes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String chat = '/chat';
+  static const String aboutUs = '/about-us';
+  static const String account = '/account';
   static Map<String, WidgetBuilder> get buildRoutes {
     return {
       wrapper: (context) => const AuthWrapper(),
       init: (context) => const HomeScreen(),
       login: (context) => const LoginScreen(),
       signup: (context) => const SignupScreen(),
-      chat: (context) => const ChatScreen()
+      chat: (context) => const ChatScreen(),
+      aboutUs: (context) => const AboutUsScreen(),
+      account: (context) => const AccountScreen(),
     };
   }
 
   static String get initialRoute => wrapper;
   static Widget get initialScreen => const AuthWrapper();
+  static Widget get accountScreen => const AccountScreen();
 }

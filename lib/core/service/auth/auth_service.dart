@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:verbisense/model/user_model.dart';
 
 class AuthService {
   final _firebaseAuth = FirebaseAuth.instance;
@@ -24,6 +25,45 @@ class AuthService {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+  }
+
+  Future<UserModel> getUser(String uid) async {
+    final userDoc = await _firestore.collection("users").doc(uid).get();
+    return UserModel.fromMap(userDoc.data()!);
+  }
+
+  Future<bool> updateUserName(String uid, String newUserName) async {
+    try {
+      await _firestore.collection("users").doc(uid).update({
+        "userName": newUserName,
+      });
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<String?> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user != null) {
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: currentPassword,
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        return null;
+      }
+      return "";
+    } catch (e) {
+      print(e);
+      return "false";
+    }
   }
 
   Future<UserCredential?> signUp(

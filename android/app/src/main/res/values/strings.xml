@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="asset_statements">
+        [{
+            \"include\": \"https://verbisense.vercel.app/.well-known/assetlinks.json\"
+        }]
+    </string>
+</resources>

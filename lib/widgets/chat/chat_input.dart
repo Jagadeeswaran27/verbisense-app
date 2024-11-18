@@ -48,7 +48,9 @@ class _ChatInputState extends State<ChatInput> {
                 ),
                 child: TextField(
                   controller: _controller,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   maxLines: null,
+                  cursorHeight: 20,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     hintText: Strings.askAQuestion,
