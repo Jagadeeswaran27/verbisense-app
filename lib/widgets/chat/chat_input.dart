@@ -3,7 +3,12 @@ import 'package:verbisense/resources/strings.dart';
 import 'package:verbisense/themes/colors.dart';
 
 class ChatInput extends StatefulWidget {
-  const ChatInput({super.key});
+  const ChatInput({
+    super.key,
+    required this.sendChatData,
+  });
+
+  final void Function(String message) sendChatData;
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -14,6 +19,7 @@ class _ChatInputState extends State<ChatInput> {
 
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {
+      widget.sendChatData(_controller.text);
       _controller.clear();
     }
   }

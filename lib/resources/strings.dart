@@ -29,6 +29,7 @@ class Strings {
   static const String account = 'Account';
   static const String personalInformation = 'Personal Information';
   static const String accountSettings = 'Account Settings';
+  static const String deleting = 'Deleting...';
   static const String logout = 'Logout';
   static const String about = 'About';
   static const String askAQuestion = 'Ask a question...';
@@ -73,4 +74,12 @@ class Strings {
   static const String userNameUpdated = 'User Name Updated';
   static const String userNameUpdateFailed = 'User Name Update Failed';
   static const String sameUserName = 'Same User Name!';
+  static const String upload = 'Upload';
+  static const String uploading = 'Uploading...';
+  static const String documents = 'Documents';
+  static const String uploadedDocumentsMax3Mb = 'Uploaded documents(Max.3MB)';
+  static const String noFilesUploaded = 'No files uploaded';
+  static const String history = 'History';
+  static const String today = 'Today';
+  static const String maxFilesUploaded = 'Max 3 files can be uploaded';
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:verbisense/core/service/autofill/autofill_service.dart';
 import 'package:verbisense/resources/strings.dart';
 import 'package:verbisense/routes/routes.dart';
 import 'package:verbisense/themes/colors.dart';
@@ -28,29 +27,9 @@ class LoginScreenWidget extends StatefulWidget {
 
 class _LoginScreenWidgetState extends State<LoginScreenWidget> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final AutofillService _autofillService = AutofillService();
   bool _isPasswordVisible = true;
   String _userEmail = '';
   String _userPassword = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _setupAutofill();
-  }
-
-  Future<void> _setupAutofill() async {
-    await _autofillService.setupAutofill(
-      _emailController,
-      [AutofillHints.email, AutofillHints.username],
-    );
-    await _autofillService.setupAutofill(
-      _passwordController,
-      [AutofillHints.password],
-    );
-  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -68,13 +47,6 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
       widget.login(_userEmail, _userPassword);
       TextInput.finishAutofillContext(shouldSave: true);
     }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 
   @override
@@ -102,7 +74,6 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
                   child: Column(
                     children: [
                       FormInput(
-                        controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         suffixIcon: const Icon(Icons.email_outlined),
                         label: Strings.emailAddress,

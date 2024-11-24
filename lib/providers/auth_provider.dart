@@ -8,6 +8,7 @@ class AuthProvider with ChangeNotifier {
   User? user;
   UserModel? userModel;
   bool _isLoading = true;
+  String currentThread = 'Today';
 
   bool get isAuthenticated => user != null;
   bool get isLoading => _isLoading;

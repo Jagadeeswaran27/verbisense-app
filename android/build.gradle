@@ -1,3 +1,18 @@
+// Root project build.gradle
+buildscript {
+    ext {
+        kotlin_version = '1.9.10' // Replace with the latest stable version
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Use the latest Android Gradle plugin that supports compileSdk 34
+        classpath "com.android.tools.build:gradle:8.2.0"
+    }
+}
+
 allprojects {
     repositories {
         google()
