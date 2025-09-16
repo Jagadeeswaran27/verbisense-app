@@ -29,6 +29,7 @@ dependencies:
   flutter_svg: ^2.2.1
   logger: ^2.6.1
   pigment: ^1.0.4
+  get_it: ^8.2.0
 
 dev_dependencies:
   flutter_test:

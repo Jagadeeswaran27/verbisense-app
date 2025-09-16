@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/resources/common_strings.dart';
 import 'package:verbisense/core/router/go_router.dart';
 import 'package:verbisense/core/themes/app_theme.dart';
-import 'package:verbisense/firebase_options.dart';
+import 'package:verbisense/init_dependencies.main.dart';
 
 void main() async {
   AppLogger.i('App Started!');
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await initDependencies();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const VerbisenseApp());
+  runApp(
+    const ProviderScope(
+      child: VerbisenseApp(),
+    ),
+  );
 }
 
 class VerbisenseApp extends StatelessWidget {
