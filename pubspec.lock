@@ -504,6 +504,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  logger:
+    dependency: "direct main"
+    description:
+      name: logger
+      sha256: "55d6c23a6c15db14920e037fe7e0dc32e7cdaf3b64b4b25df2d541b5b6b81c0c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.1"
   logging:
     dependency: transitive
     description:
@@ -608,6 +616,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  pigment:
+    dependency: "direct main"
+    description:
+      name: pigment
+      sha256: b8c56059e21ecb9379a304c78a4f20e399d41e54384a7f64de21103b4b5c38dd
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   platform:
     dependency: transitive
     description:
