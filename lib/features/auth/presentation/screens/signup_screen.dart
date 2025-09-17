@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/common/widgets/svg_loader.dart';
@@ -67,11 +68,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
     ref.listen<AuthState>(authProvider, (previous, next) {
       if (next is AuthError) {
-        final snackBar = SnackBar(
-          content: Text(next.message),
-          backgroundColor: ThemeColors.red,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        showSnackBar(context, next.message, error: true);
       } else if (next is AuthSuccess) {
         showSnackBar(context, 'Signup Success!');
         _clearInputs();
@@ -158,14 +155,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       CustomElevatedButton(
                         onTap: _handleSignup,
                         text: CommonStrings.signup,
+                        loading: authState is AuthLoading,
                       ),
                     ],
                   ),
                 ),
-                if (authState is AuthLoading) ...[
-                  const SizedBox(height: 20),
-                  const CircularProgressIndicator(),
-                ],
                 const SizedBox(height: 20),
                 const CustomDivider(),
                 const SizedBox(height: 20),

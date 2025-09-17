@@ -45,8 +45,20 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       _firestore.collection("users").doc(user.uid).set(userData);
       AppLogger.i('User created: ${user.uid}');
       return UserModel.fromJson(userData);
-    } catch (e) {
-      rethrow;
+    } on FirebaseAuthException catch (e) {
+      AppLogger.e('FirebaseAuthException: ${e.message}');
+      switch (e.code) {
+        case 'email-already-in-use':
+          throw const ServerException('Email already in use');
+        case 'invalid-email':
+          throw const ServerException('Invalid email');
+        case 'operation-not-allowed':
+          throw const ServerException('Operation not allowed');
+        case 'weak-password':
+          throw const ServerException('Weak password');
+        default:
+          throw ServerException(e.message ?? 'Authentication error');
+      }
     }
   }
 

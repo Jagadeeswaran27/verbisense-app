@@ -9,12 +9,14 @@ class CustomElevatedButton extends StatelessWidget {
     required this.text,
     this.backgroundColor,
     this.icon,
+    this.loading = false,
   });
 
   final void Function() onTap;
   final String text;
   final Color? backgroundColor;
   final IconData? icon;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +49,28 @@ class CustomElevatedButton extends StatelessWidget {
                   const SizedBox(width: 10),
                 ],
               ),
-            Text(
-              text,
-              style: backgroundColor == null
-                  ? Theme.of(context).textTheme.titleSmall
-                  : Theme.of(context).textTheme.bodyMedium,
-            ),
+            if (loading) ...[
+              SizedBox(
+                width: 23,
+                height: 23,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    backgroundColor != null
+                        ? ThemeColors.black
+                        : ThemeColors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+            ],
+            if (!loading)
+              Text(
+                text,
+                style: backgroundColor == null
+                    ? Theme.of(context).textTheme.titleSmall
+                    : Theme.of(context).textTheme.bodyMedium,
+              ),
           ],
         ),
       ),

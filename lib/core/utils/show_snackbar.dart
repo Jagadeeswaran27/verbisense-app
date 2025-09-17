@@ -28,7 +28,7 @@ void showSnackBar(BuildContext context, String message, {bool error = false}) {
       borderRadius: BorderRadius.circular(10),
     ),
     action: SnackBarAction(
-      label: 'Undo',
+      label: 'Ok',
       textColor: error ? Colors.white : Colors.blueAccent,
       onPressed: () {
         // Action when the button is pressed
