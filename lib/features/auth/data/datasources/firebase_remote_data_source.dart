@@ -11,10 +11,10 @@ abstract class FirebaseRemoteDataSource {
     String email,
     String password,
   );
-  // Future<void> signInWithEmailAndPassword(
-  //   String email,
-  //   String password,
-  // );
+  Future<UserModel> signInWithEmailAndPassword(
+    String email,
+    String password,
+  );
   // Future<void> signOut();
 }
 
@@ -43,10 +43,8 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         "name": name,
       };
       _firestore.collection("users").doc(user.uid).set(userData);
-      AppLogger.i('User created: ${user.uid}');
       return UserModel.fromJson(userData);
     } on FirebaseAuthException catch (e) {
-      AppLogger.e('FirebaseAuthException: ${e.message}');
       switch (e.code) {
         case 'email-already-in-use':
           throw const ServerException('Email already in use');
@@ -62,18 +60,41 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     }
   }
 
-  // @override
-  // Future<void> signInWithEmailAndPassword(
-  //   String email,
-  //   String password,
-  // ) {
-  //   // TODO: implement signInWithEmailAndPassword
-  //   throw UnimplementedError();
-  // }
+  @override
+  Future<UserModel> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    try {
+      final userCredential = await firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-  // @override
-  // Future<void> signOut() {
-  //   // TODO: implement signOut
-  //   throw UnimplementedError();
-  // }
+      final user = userCredential.user;
+      if (user == null) {
+        throw const ServerException('User data is null');
+      }
+
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      if (!userDoc.exists) {
+        throw const ServerException('User data not found');
+      }
+      return UserModel.fromJson(userDoc.data()!);
+    } on FirebaseAuthException catch (e) {
+      AppLogger.e(e.code);
+      switch (e.code) {
+        case 'invalid-credential':
+          throw const ServerException('Invalid credential');
+        case 'user-disabled':
+          throw const ServerException('User disabled');
+        case 'user-not-found':
+          throw const ServerException('User not found');
+        case 'wrong-password':
+          throw const ServerException('Wrong password');
+        default:
+          throw ServerException(e.message ?? 'Authentication error');
+      }
+    }
+  }
 }

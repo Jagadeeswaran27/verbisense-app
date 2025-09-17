@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/resources/common_strings.dart';
@@ -7,18 +8,20 @@ import 'package:verbisense/core/common/widgets/svg_loader.dart';
 import 'package:verbisense/core/router/app_routes.dart';
 import 'package:verbisense/core/themes/colors.dart';
 import 'package:verbisense/core/utils/navigation.dart';
+import 'package:verbisense/core/utils/show_snackbar.dart';
+import 'package:verbisense/features/auth/presentation/provider/auth_provider.dart';
 import 'package:verbisense/features/auth/presentation/widgets/custom_divider.dart';
 import 'package:verbisense/features/auth/presentation/widgets/custom_elevated_button.dart';
 import 'package:verbisense/features/auth/presentation/widgets/form_input.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = true;
   String userEmail = '';
@@ -35,17 +38,39 @@ class _LoginScreenState extends State<LoginScreen> {
     goToScreen(context, AppRoutes.signup.path);
   }
 
+  void _clearInputs() {
+    _formKey.currentState?.reset();
+    setState(() {
+      userEmail = '';
+      userPassword = '';
+    });
+  }
+
   void _onLogin() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // widget.login(_userEmail, _userPassword);
+      ref
+          .read(authProvider.notifier)
+          .signIn(
+            email: userEmail,
+            password: userPassword,
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+    final authState = ref.watch(authProvider);
 
+    ref.listen<AuthState>(authProvider, (previous, next) {
+      if (next is AuthError) {
+        showSnackBar(context, next.message, error: true);
+      } else if (next is AuthSuccess) {
+        showSnackBar(context, 'Welcome ${next.user.name}');
+        _clearInputs();
+      }
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -110,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomElevatedButton(
                           onTap: _onLogin,
                           text: CommonStrings.login,
+                          loading: authState is AuthLoading,
                         ),
                       ],
                     ),

@@ -34,7 +34,7 @@ void showSnackBar(BuildContext context, String message, {bool error = false}) {
         // Action when the button is pressed
       },
     ),
-    duration: const Duration(milliseconds: 3000),
+    duration: const Duration(milliseconds: 1500),
     padding: const EdgeInsets.symmetric(
       horizontal: 10,
       vertical: 7,

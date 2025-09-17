@@ -73,7 +73,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         showSnackBar(context, 'Signup Success!');
         _clearInputs();
         _navigateToLoginScreen();
-        // Navigate to home or another screen if needed
       }
     });
     return Scaffold(

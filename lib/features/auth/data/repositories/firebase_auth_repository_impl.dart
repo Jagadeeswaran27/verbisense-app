@@ -27,4 +27,20 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
       return Left(Failure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, User>> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    try {
+      final user = await remoteDataSource.signInWithEmailAndPassword(
+        email,
+        password,
+      );
+      return Right(user);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
+  }
 }

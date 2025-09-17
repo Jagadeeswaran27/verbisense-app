@@ -7,6 +7,7 @@ import 'package:verbisense/features/auth/data/datasources/firebase_remote_data_s
 import 'package:verbisense/features/auth/data/repositories/firebase_auth_repository_impl.dart';
 import 'package:verbisense/features/auth/domain/repository/firebase_auth_repository.dart';
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
+import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/firebase_options.dart';
 
 final serviceLocator = GetIt.instance;
@@ -32,5 +33,8 @@ void _initAuth() {
     )
     ..registerFactory<CreateUser>(
       () => CreateUser(serviceLocator()),
+    )
+    ..registerFactory<EmailSignin>(
+      () => EmailSignin(serviceLocator()),
     );
 }

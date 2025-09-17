@@ -4,6 +4,7 @@ import 'package:verbisense/core/common/entities/user.dart';
 import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/features/auth/data/models/user_model.dart';
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
+import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/init_dependencies.main.dart';
 
 sealed class AuthState {
@@ -35,8 +36,12 @@ class AuthError extends AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final CreateUser _createUser;
+  final EmailSignin _emailSignin;
 
-  AuthNotifier(this._createUser) : super(const AuthState.initial());
+  AuthNotifier(
+    this._createUser,
+    this._emailSignin,
+  ) : super(const AuthState.initial());
 
   Future<void> signUp({
     required String name,
@@ -63,8 +68,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
     );
   }
+
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    state = const AuthState.loading();
+    final result = await _emailSignin(
+      EmailSigninParams(
+        email: email,
+        password: password,
+      ),
+    );
+    result.fold(
+      (failure) {
+        AppLogger.e(failure.message);
+        state = AuthState.error(failure.message);
+      },
+      (user) {
+        final userModel = user as UserModel;
+        AppLogger.i(userModel.toJson().toString());
+        state = AuthState.success(userModel);
+      },
+    );
+  }
 }
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(serviceLocator<CreateUser>());
+  return AuthNotifier(
+    serviceLocator<CreateUser>(),
+    serviceLocator<EmailSignin>(),
+  );
 });
