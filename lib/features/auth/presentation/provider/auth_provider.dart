@@ -7,6 +7,7 @@ import 'package:verbisense/features/auth/data/models/user_model.dart';
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/google_signin.dart';
+import 'package:verbisense/features/auth/domain/usecases/signout.dart';
 import 'package:verbisense/init_dependencies.main.dart';
 
 sealed class AuthState {
@@ -40,11 +41,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final CreateUser _createUser;
   final EmailSignin _emailSignin;
   final GoogleSignin _googleSignin;
+  final Signout _signout;
 
   AuthNotifier(
     this._createUser,
     this._emailSignin,
     this._googleSignin,
+    this._signout,
   ) : super(const AuthState.initial());
 
   Future<void> signUp({
@@ -112,6 +115,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
     );
   }
+
+  Future<void> signOut() async {
+    final result = await _signout(NoParams());
+    result.fold(
+      (failure) {
+        AppLogger.e(failure.message);
+        state = AuthState.error(failure.message);
+      },
+      (_) {
+        state = const AuthState.initial();
+      },
+    );
+  }
 }
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
@@ -119,5 +135,6 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
     serviceLocator<CreateUser>(),
     serviceLocator<EmailSignin>(),
     serviceLocator<GoogleSignin>(),
+    serviceLocator<Signout>(),
   );
 });

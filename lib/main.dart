@@ -26,11 +26,13 @@ void main() async {
   );
 }
 
-class VerbisenseApp extends StatelessWidget {
+class VerbisenseApp extends ConsumerWidget {
   const VerbisenseApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
     return MaterialApp.router(
       title: CommonStrings.appName,
       debugShowCheckedModeBanner: false,

@@ -1,9 +1,11 @@
 import 'package:fpdart/fpdart.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:verbisense/core/common/entities/user.dart';
 import 'package:verbisense/core/error/exceptions.dart';
 import 'package:verbisense/core/error/failures.dart';
 import 'package:verbisense/features/auth/data/datasources/firebase_remote_data_source.dart';
+import 'package:verbisense/features/auth/data/models/user_model.dart';
 import 'package:verbisense/features/auth/domain/repository/firebase_auth_repository.dart';
 
 class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
@@ -49,6 +51,41 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
     try {
       final user = await remoteDataSource.signInWithGoogle();
       return Right(user);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
+  }
+
+  @override
+  Stream<Either<Failure, User>> userAuthStateChanges() async* {
+    try {
+      await for (final firebaseUser
+          in remoteDataSource.userAuthStateChanges()) {
+        if (firebaseUser != null) {
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(firebaseUser.uid)
+              .get();
+          if (userDoc.exists) {
+            final user = UserModel.fromJson(userDoc.data()!);
+            yield Right(user);
+          } else {
+            yield Left(Failure('User not found'));
+          }
+        } else {
+          yield Left(Failure('User not authenticated'));
+        }
+      }
+    } on ServerException catch (e) {
+      throw ServerException(e.message);
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> signOut() async {
+    try {
+      await remoteDataSource.signOut();
+      return Right(null);
     } on ServerException catch (e) {
       return Left(Failure(e.message));
     }

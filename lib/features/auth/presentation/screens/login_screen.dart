@@ -74,6 +74,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         showSnackBar(context, next.message, error: true);
       } else if (next is AuthSuccess) {
         showSnackBar(context, 'Welcome ${next.user.name}');
+        goToScreen(context, AppRoutes.home.path);
         _clearInputs();
       }
     });

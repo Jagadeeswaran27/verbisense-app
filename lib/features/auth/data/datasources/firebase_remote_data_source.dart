@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:verbisense/core/config/app_logger.dart';
 
+import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/error/exceptions.dart';
 import 'package:verbisense/features/auth/data/models/user_model.dart';
 
@@ -17,12 +18,15 @@ abstract class FirebaseRemoteDataSource {
     String password,
   );
   Future<UserModel> signInWithGoogle();
+  Future<void> signOut();
+  Stream<User?> userAuthStateChanges();
 }
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final FirebaseFunctions _firebaseFunctions = FirebaseFunctions.instance;
   FirebaseRemoteDataSourceImpl(this.firebaseAuth);
   @override
   Future<UserModel> createUserWithEmailAndPassword(
@@ -31,35 +35,34 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     String password,
   ) async {
     try {
-      final response = await firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+      final HttpsCallable callable = _firebaseFunctions.httpsCallable(
+        'createUser',
       );
-      final user = response.user;
-      if (user == null) {
-        throw const ServerException('User data is null');
-      }
-      final userData = {
-        "uid": user.uid,
-        "email": email,
-        "name": name,
-      };
-      _firestore.collection("users").doc(user.uid).set(userData);
-      await firebaseAuth.signOut();
-      return UserModel.fromJson(userData);
-    } on FirebaseAuthException catch (e) {
+      final result = await callable.call({
+        'email': email,
+        'password': password,
+        'name': name,
+      });
+
+      final rawUserData = result.data['user'];
+      final userData = Map<String, dynamic>.from(rawUserData as Map);
+      final user = UserModel.fromJson(userData);
+
+      return user;
+    } on FirebaseFunctionsException catch (e) {
       switch (e.code) {
-        case 'email-already-in-use':
+        case 'already-exists':
           throw const ServerException('Email already in use');
-        case 'invalid-email':
-          throw const ServerException('Invalid email');
-        case 'operation-not-allowed':
-          throw const ServerException('Operation not allowed');
-        case 'weak-password':
-          throw const ServerException('Weak password');
+        case 'invalid-argument':
+          throw const ServerException('Invalid input provided');
+        case 'internal':
+          throw ServerException(e.message ?? 'Internal server error');
         default:
-          throw ServerException(e.message ?? 'Authentication error');
+          throw ServerException(e.message ?? 'Unknown server error');
       }
+    } catch (e) {
+      AppLogger.e(e.toString());
+      throw ServerException(e.toString());
     }
   }
 
@@ -171,6 +174,21 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         default:
           throw ServerException(e.message ?? 'Authentication error');
       }
+    } catch (e) {
+      AppLogger.e(e.toString());
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Stream<User?> userAuthStateChanges() async* {
+    yield* firebaseAuth.authStateChanges();
+  }
+
+  @override
+  Future<void> signOut() {
+    try {
+      return firebaseAuth.signOut();
     } catch (e) {
       AppLogger.e(e.toString());
       throw ServerException(e.toString());

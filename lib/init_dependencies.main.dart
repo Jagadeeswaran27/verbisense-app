@@ -9,6 +9,7 @@ import 'package:verbisense/features/auth/domain/repository/firebase_auth_reposit
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/google_signin.dart';
+import 'package:verbisense/features/auth/domain/usecases/signout.dart';
 import 'package:verbisense/firebase_options.dart';
 
 final serviceLocator = GetIt.instance;
@@ -40,5 +41,8 @@ void _initAuth() {
     )
     ..registerFactory<GoogleSignin>(
       () => GoogleSignin(serviceLocator()),
+    )
+    ..registerFactory<Signout>(
+      () => Signout(serviceLocator()),
     );
 }

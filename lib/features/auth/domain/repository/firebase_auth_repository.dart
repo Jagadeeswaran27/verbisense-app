@@ -15,4 +15,6 @@ abstract class FirebaseAuthRepository {
     String password,
   );
   Future<Either<Failure, User>> signInWithGoogle();
+  Future<Either<Failure, void>> signOut();
+  Stream<Either<Failure, User>> userAuthStateChanges();
 }
