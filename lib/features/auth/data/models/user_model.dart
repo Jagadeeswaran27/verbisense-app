@@ -21,7 +21,7 @@ class UserModel extends User {
     String? name,
   }) {
     return UserModel(
-      uid: uid,
+      uid: id ?? uid,
       email: email ?? this.email,
       name: name ?? this.name,
     );
@@ -29,7 +29,7 @@ class UserModel extends User {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': uid,
+      'uid': uid,
       'email': email,
       'name': name,
     };

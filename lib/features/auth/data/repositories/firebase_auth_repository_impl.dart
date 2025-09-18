@@ -43,4 +43,14 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
       return Left(Failure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, User>> signInWithGoogle() async {
+    try {
+      final user = await remoteDataSource.signInWithGoogle();
+      return Right(user);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
+  }
 }

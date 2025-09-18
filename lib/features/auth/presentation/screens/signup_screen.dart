@@ -57,6 +57,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     }
   }
 
+  void _handleGoogleSignin() {
+    ref.read(authProvider.notifier).signInWithGoogle();
+    FocusScope.of(context).unfocus();
+  }
+
   void _navigateToLoginScreen() {
     goToScreen(context, AppRoutes.login.path);
   }
@@ -163,7 +168,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const CustomDivider(),
                 const SizedBox(height: 20),
                 InkWell(
-                  onTap: () {},
+                  onTap: _handleGoogleSignin,
                   child: const SVGLoader(
                     image: icons.Icons.googleIcon,
                     width: 35,

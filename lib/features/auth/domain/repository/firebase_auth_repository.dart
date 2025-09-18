@@ -14,4 +14,5 @@ abstract class FirebaseAuthRepository {
     String email,
     String password,
   );
+  Future<Either<Failure, User>> signInWithGoogle();
 }

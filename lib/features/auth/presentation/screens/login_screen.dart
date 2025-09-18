@@ -46,7 +46,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
   }
 
-  void _onLogin() {
+  void _handleGoogleSignin() {
+    ref.read(authProvider.notifier).signInWithGoogle();
+    FocusScope.of(context).unfocus();
+  }
+
+  void _handleLogin() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       ref
@@ -55,6 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             email: userEmail,
             password: userPassword,
           );
+      FocusScope.of(context).unfocus();
     }
   }
 
@@ -133,7 +139,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 20),
                         CustomElevatedButton(
-                          onTap: _onLogin,
+                          onTap: _handleLogin,
                           text: CommonStrings.login,
                           loading: authState is AuthLoading,
                         ),
@@ -145,7 +151,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const CustomDivider(),
                 const SizedBox(height: 20),
                 InkWell(
-                  onTap: () {},
+                  onTap: _handleGoogleSignin,
                   child: const SVGLoader(
                     image: icons.Icons.googleIcon,
                     width: 35,
