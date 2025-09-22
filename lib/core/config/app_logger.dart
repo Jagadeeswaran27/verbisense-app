@@ -44,7 +44,6 @@ class AppLogger {
       message,
       error: data,
     ), // Error with stack trace and additional data object
-    // You can integrate with Firebase Crashlytics here -> TODO:(Discuss with balaji)
     // FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: message);
   };
 }

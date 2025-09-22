@@ -30,6 +30,7 @@ dependencies:
   logger: ^2.6.1
   pigment: ^1.0.4
   get_it: ^8.2.0
+  flutter_local_notifications: ^19.4.2
 
 dev_dependencies:
   flutter_test:

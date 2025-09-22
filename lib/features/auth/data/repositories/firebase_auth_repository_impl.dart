@@ -62,22 +62,40 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
       await for (final firebaseUser
           in remoteDataSource.userAuthStateChanges()) {
         if (firebaseUser != null) {
-          final userDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(firebaseUser.uid)
-              .get();
-          if (userDoc.exists) {
-            final user = UserModel.fromJson(userDoc.data()!);
+          User? user;
+          int retryCount = 0;
+          const maxRetries = 3;
+
+          while (user == null && retryCount < maxRetries) {
+            final userDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(firebaseUser.uid)
+                .get();
+
+            if (userDoc.exists) {
+              user = UserModel.fromJson(userDoc.data()!);
+              break;
+            } else {
+              retryCount++;
+              if (retryCount < maxRetries) {
+                await Future.delayed(Duration(milliseconds: 200 * retryCount));
+              }
+            }
+          }
+
+          if (user != null) {
             yield Right(user);
           } else {
-            yield Left(Failure('User not found'));
+            yield Left(Failure('User document not found after retries'));
           }
         } else {
           yield Left(Failure('User not authenticated'));
         }
       }
     } on ServerException catch (e) {
-      throw ServerException(e.message);
+      yield Left(Failure(e.message));
+    } catch (e) {
+      yield Left(Failure(e.toString()));
     }
   }
 

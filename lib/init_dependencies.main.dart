@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:verbisense/core/config/firebase_push_notification.dart';
 
 import 'package:verbisense/features/auth/data/datasources/firebase_remote_data_source.dart';
 import 'package:verbisense/features/auth/data/repositories/firebase_auth_repository_impl.dart';
@@ -20,6 +21,7 @@ Future<void> initDependencies() async {
   );
   serviceLocator.registerLazySingleton(() => firebase);
   serviceLocator.registerLazySingleton(() => FirebaseAuth.instance);
+  serviceLocator.registerLazySingleton(() => FirebasePushNotification);
 
   _initAuth();
 }

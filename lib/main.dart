@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/config/app_logger.dart';
+import 'package:verbisense/core/config/firebase_push_notification.dart';
 import 'package:verbisense/core/resources/common_strings.dart';
 import 'package:verbisense/core/router/go_router.dart';
 import 'package:verbisense/core/themes/app_theme.dart';
@@ -19,6 +20,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  await FirebasePushNotification().initNotifications();
   runApp(
     const ProviderScope(
       child: VerbisenseApp(),
