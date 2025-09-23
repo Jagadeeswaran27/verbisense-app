@@ -11,6 +11,7 @@ import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/google_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/signout.dart';
+import 'package:verbisense/features/auth/domain/usecases/update_fcm.dart';
 import 'package:verbisense/firebase_options.dart';
 
 final serviceLocator = GetIt.instance;
@@ -46,5 +47,8 @@ void _initAuth() {
     )
     ..registerFactory<Signout>(
       () => Signout(serviceLocator()),
+    )
+    ..registerFactory(
+      () => UpdateFcm(serviceLocator()),
     );
 }

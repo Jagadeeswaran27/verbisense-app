@@ -17,4 +17,5 @@ abstract class FirebaseAuthRepository {
   Future<Either<Failure, User>> signInWithGoogle();
   Future<Either<Failure, void>> signOut();
   Stream<Either<Failure, User>> userAuthStateChanges();
+  Future<Either<Failure, bool>> updateFcmToken(String token);
 }

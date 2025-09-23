@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/resources/common_strings.dart';
 import 'package:verbisense/core/resources/icons.dart' as icons;
 import 'package:verbisense/core/common/widgets/svg_loader.dart';
@@ -34,7 +33,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _navigateToSignupScreen() {
-    AppLogger.i('Navigating to Signup Screen');
     goToScreen(context, AppRoutes.signup.path);
   }
 
@@ -69,12 +67,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final Size screenSize = MediaQuery.of(context).size;
     final authState = ref.watch(authProvider);
 
-    ref.listen<AuthState>(authProvider, (previous, next) {
+    ref.listen<AuthState>(authProvider, (previous, next) async {
       if (next is AuthError) {
         showSnackBar(context, next.message, error: true);
       } else if (next is AuthSuccess) {
-        showSnackBar(context, 'Welcome ${next.user.name}');
-        goToScreen(context, AppRoutes.home.path);
         _clearInputs();
       }
     });

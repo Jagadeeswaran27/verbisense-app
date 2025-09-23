@@ -13,13 +13,13 @@ class FirebasePushNotification {
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _localNotifications = FlutterLocalNotificationsPlugin();
 
-  Future<void> initNotifications() async {
+  Future<String?> initNotifications() async {
     await _firebaseMessaging.requestPermission();
+    _initPushNotifications();
 
     final fcmToken = await _firebaseMessaging.getToken();
     AppLogger.i('FCM Token: $fcmToken');
-
-    _initPushNotifications();
+    return fcmToken;
   }
 
   void _handleMessage(RemoteMessage? message) {

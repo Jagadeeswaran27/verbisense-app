@@ -23,6 +23,7 @@ abstract class FirebaseRemoteDataSource {
   Future<UserModel> signInWithGoogle();
   Future<void> signOut();
   Stream<User?> userAuthStateChanges();
+  Future<bool> updateFcmToken(String token);
 }
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
@@ -100,6 +101,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       if (!userDoc.exists) {
         throw const ServerException(FirebaseErrorStrings.userDataNotFound);
       }
+      await user.getIdToken(true);
       return UserModel.fromJson(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
       AppLogger.e(e.code);
@@ -164,13 +166,33 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   @override
   Stream<User?> userAuthStateChanges() async* {
-    yield* firebaseAuth.authStateChanges();
+    yield* firebaseAuth.authStateChanges().map((user) {
+      return user;
+    });
   }
 
   @override
   Future<void> signOut() {
     try {
       return firebaseAuth.signOut();
+    } catch (e) {
+      AppLogger.e(e.toString());
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<bool> updateFcmToken(String token) async {
+    try {
+      final user = firebaseAuth.currentUser;
+      if (user == null) {
+        throw const ServerException(FirebaseErrorStrings.userDataIsNull);
+      }
+      final userDoc = _firestore.collection('users').doc(user.uid);
+      await userDoc.update({
+        'fcmToken': FieldValue.arrayUnion([token]),
+      });
+      return true;
     } catch (e) {
       AppLogger.e(e.toString());
       throw ServerException(e.toString());

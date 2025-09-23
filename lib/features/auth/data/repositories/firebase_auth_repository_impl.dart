@@ -61,39 +61,26 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
     try {
       await for (final firebaseUser
           in remoteDataSource.userAuthStateChanges()) {
-        if (firebaseUser != null) {
-          User? user;
-          int retryCount = 0;
-          const maxRetries = 3;
-
-          while (user == null && retryCount < maxRetries) {
+        if (firebaseUser == null) {
+          yield Left(Failure('User is not authenticated'));
+        } else {
+          try {
             final userDoc = await FirebaseFirestore.instance
                 .collection('users')
                 .doc(firebaseUser.uid)
                 .get();
 
             if (userDoc.exists) {
-              user = UserModel.fromJson(userDoc.data()!);
-              break;
+              final user = UserModel.fromJson(userDoc.data()!);
+              yield Right(user);
             } else {
-              retryCount++;
-              if (retryCount < maxRetries) {
-                await Future.delayed(Duration(milliseconds: 200 * retryCount));
-              }
+              yield Left(Failure('User document not found.'));
             }
+          } catch (e) {
+            yield Left(Failure('Failed to fetch user document: $e'));
           }
-
-          if (user != null) {
-            yield Right(user);
-          } else {
-            yield Left(Failure('User document not found after retries'));
-          }
-        } else {
-          yield Left(Failure('User not authenticated'));
         }
       }
-    } on ServerException catch (e) {
-      yield Left(Failure(e.message));
     } catch (e) {
       yield Left(Failure(e.toString()));
     }
@@ -104,6 +91,16 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
     try {
       await remoteDataSource.signOut();
       return Right(null);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> updateFcmToken(String token) async {
+    try {
+      final result = await remoteDataSource.updateFcmToken(token);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(Failure(e.message));
     }

@@ -2,12 +2,14 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:verbisense/core/common/entities/user.dart';
 import 'package:verbisense/core/config/app_logger.dart';
+import 'package:verbisense/core/config/firebase_push_notification.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
 import 'package:verbisense/features/auth/data/models/user_model.dart';
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/google_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/signout.dart';
+import 'package:verbisense/features/auth/domain/usecases/update_fcm.dart';
 import 'package:verbisense/init_dependencies.main.dart';
 
 sealed class AuthState {
@@ -42,12 +44,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final EmailSignin _emailSignin;
   final GoogleSignin _googleSignin;
   final Signout _signout;
+  final UpdateFcm _updateFcm;
 
   AuthNotifier(
     this._createUser,
     this._emailSignin,
     this._googleSignin,
     this._signout,
+    this._updateFcm,
   ) : super(const AuthState.initial());
 
   Future<void> signUp({
@@ -94,7 +98,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
       (user) {
         final userModel = user as UserModel;
-        AppLogger.i(userModel.toJson().toString());
+
+        AppLogger.i('Login Success! ${userModel.toJson().toString()}');
         state = AuthState.success(userModel);
       },
     );
@@ -110,7 +115,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
       (user) {
         final userModel = user as UserModel;
-        AppLogger.i(userModel.toJson().toString());
+        AppLogger.i('Login Success! ${userModel.toJson().toString()}');
         state = AuthState.success(userModel);
       },
     );
@@ -128,6 +133,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
     );
   }
+
+  Future<void> askNotificationPermission() async {
+    final token = await FirebasePushNotification().initNotifications();
+    if (token != null) {
+      final result = await _updateFcm(token);
+      result.fold(
+        (failure) {
+          AppLogger.e(failure.message);
+          state = AuthState.error(failure.message);
+        },
+        (_) {},
+      );
+    }
+  }
 }
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
@@ -136,5 +155,6 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
     serviceLocator<EmailSignin>(),
     serviceLocator<GoogleSignin>(),
     serviceLocator<Signout>(),
+    serviceLocator<UpdateFcm>(),
   );
 });
