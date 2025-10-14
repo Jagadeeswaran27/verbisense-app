@@ -1,4 +1,4 @@
-import 'package:verbisense/core/resources/google_signin_error_strings.dart';
+import 'package:verbisense/core/resources/strings/google_signin_error_strings.dart';
 
 enum GoogleSignInErrorCode {
   canceled('canceled'),

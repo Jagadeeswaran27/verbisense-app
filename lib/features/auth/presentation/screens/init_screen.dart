@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:verbisense/core/common/widgets/svg_loader.dart';
-import 'package:verbisense/core/resources/common_strings.dart';
+import 'package:verbisense/core/widgets/svg_loader.dart';
+import 'package:verbisense/core/resources/strings/common_strings.dart';
 import 'package:verbisense/core/resources/icons.dart' as icons;
 import 'package:verbisense/core/router/app_routes.dart';
 import 'package:verbisense/core/themes/colors.dart';

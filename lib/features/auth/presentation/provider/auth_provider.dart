@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
-import 'package:verbisense/core/common/entities/user.dart';
+import 'package:verbisense/core/entities/user.dart';
 import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/config/firebase_push_notification.dart';
 import 'package:verbisense/core/usecase/usecase.dart';

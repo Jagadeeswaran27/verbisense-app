@@ -1,4 +1,4 @@
-import 'package:verbisense/core/resources/firebase_error_strings.dart';
+import 'package:verbisense/core/resources/strings/firebase_error_strings.dart';
 
 enum FirebaseErrorCode {
   alreadyExists('already-exists'),

@@ -5,16 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:verbisense/features/auth/presentation/screens/init_screen.dart';
 import 'package:verbisense/features/auth/presentation/screens/login_screen.dart';
 import 'package:verbisense/features/auth/presentation/screens/signup_screen.dart';
-import 'package:verbisense/features/chat/presentation/screens/home_screen.dart';
-import 'package:verbisense/core/common/widgets/loading_screen.dart';
+import 'package:verbisense/features/chat/presentation/screens/chat_screen.dart';
+import 'package:verbisense/core/widgets/loading_screen.dart';
 
-enum AppRoutes {
-  init,
-  loading,
-  login,
-  signup,
-  home,
-}
+enum AppRoutes { init, loading, login, signup, chat }
 
 extension AppRoutesExtension on AppRoutes {
   static const Map<AppRoutes, String> _paths = {
@@ -22,7 +16,7 @@ extension AppRoutesExtension on AppRoutes {
     AppRoutes.loading: '/loading',
     AppRoutes.signup: '/signup',
     AppRoutes.login: '/login',
-    AppRoutes.home: '/home',
+    AppRoutes.chat: '/chat',
   };
 
   static const Map<AppRoutes, String> _names = {
@@ -30,7 +24,7 @@ extension AppRoutesExtension on AppRoutes {
     AppRoutes.loading: 'loading',
     AppRoutes.signup: 'signup',
     AppRoutes.login: 'login',
-    AppRoutes.home: 'home',
+    AppRoutes.chat: 'chat',
   };
 
   static const Map<AppRoutes, Widget Function()> _builders = {
@@ -38,7 +32,7 @@ extension AppRoutesExtension on AppRoutes {
     AppRoutes.loading: LoadingScreen.new,
     AppRoutes.login: LoginScreen.new,
     AppRoutes.signup: SignupScreen.new,
-    AppRoutes.home: HomeScreen.new,
+    AppRoutes.chat: ChatScreen.new,
   };
 
   String get path => _paths[this]!;

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-import 'package:verbisense/core/common/widgets/loader/build_sides.dart';
+import 'package:verbisense/core/widgets/loader/build_sides.dart';
 
 class DotsTriangle extends StatefulWidget {
   final double size;
   final Color color;
   const DotsTriangle({
-    Key? key,
+    super.key,
     required this.color,
     required this.size,
-  }) : super(key: key);
+  });
 
   @override
-  _DotsTriangleState createState() => _DotsTriangleState();
+  DotsTriangleState createState() => DotsTriangleState();
 }
 
-class _DotsTriangleState extends State<DotsTriangle>
+class DotsTriangleState extends State<DotsTriangle>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 

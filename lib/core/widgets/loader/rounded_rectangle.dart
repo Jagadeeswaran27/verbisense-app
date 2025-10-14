@@ -6,20 +6,18 @@ class RoundedRectangle extends StatelessWidget {
   final Color color;
   final bool vertical;
   const RoundedRectangle.vertical({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     required this.color,
-  }) : vertical = true,
-       super(key: key);
+  }) : vertical = true;
 
   const RoundedRectangle.horizontal({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     required this.color,
-  }) : vertical = false,
-       super(key: key);
+  }) : vertical = false;
 
   @override
   Widget build(BuildContext context) {

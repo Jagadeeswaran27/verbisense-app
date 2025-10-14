@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:verbisense/core/common/widgets/loader/animation_controller_utils.dart';
-import 'package:verbisense/core/common/widgets/loader/rounded_rectangle.dart';
+import 'package:verbisense/core/widgets/loader/animation_controller_utils.dart';
+import 'package:verbisense/core/widgets/loader/rounded_rectangle.dart';
 
 class BuildSides extends StatelessWidget {
   final double maxLength;
@@ -13,7 +13,7 @@ class BuildSides extends StatelessWidget {
   final bool forward;
 
   const BuildSides.forward({
-    Key? key,
+    super.key,
     required this.maxLength,
     required this.depth,
     required this.color,
@@ -21,11 +21,10 @@ class BuildSides extends StatelessWidget {
     required this.interval,
     this.rotationAngle = 0,
     this.rotationOrigin = Offset.zero,
-  }) : forward = true,
-       super(key: key);
+  }) : forward = true;
 
   const BuildSides.reverse({
-    Key? key,
+    super.key,
     required this.maxLength,
     required this.depth,
     required this.color,
@@ -33,8 +32,7 @@ class BuildSides extends StatelessWidget {
     required this.interval,
     this.rotationAngle = 0,
     this.rotationOrigin = Offset.zero,
-  }) : forward = false,
-       super(key: key);
+  }) : forward = false;
 
   @override
   Widget build(BuildContext context) {

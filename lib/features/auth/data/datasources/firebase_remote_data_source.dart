@@ -7,7 +7,7 @@ import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/error/exceptions.dart';
 import 'package:verbisense/core/error/firebase_error_code.dart';
 import 'package:verbisense/core/error/google_signin_error_code.dart';
-import 'package:verbisense/core/resources/firebase_error_strings.dart';
+import 'package:verbisense/core/resources/strings/firebase_error_strings.dart';
 import 'package:verbisense/features/auth/data/models/user_model.dart';
 
 abstract class FirebaseRemoteDataSource {

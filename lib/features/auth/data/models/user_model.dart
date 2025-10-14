@@ -1,4 +1,4 @@
-import 'package:verbisense/core/common/entities/user.dart';
+import 'package:verbisense/core/entities/user.dart';
 
 class UserModel extends User {
   UserModel({

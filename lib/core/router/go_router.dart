@@ -23,7 +23,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       if (isAuthenticated && isOnAuthPage) {
-        return AppRoutes.home.path;
+        return AppRoutes.chat.path;
       }
       if (!isAuthenticated && !isOnAuthPage) {
         return AppRoutes.login.path;

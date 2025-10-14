@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:verbisense/core/common/widgets/loader/dots_tirangle.dart';
+import 'package:verbisense/core/widgets/loader/dots_tirangle.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});

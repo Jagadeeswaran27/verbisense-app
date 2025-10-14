@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:verbisense/core/common/entities/user.dart';
+import 'package:verbisense/core/entities/user.dart';
 import 'package:verbisense/core/error/exceptions.dart';
 import 'package:verbisense/core/error/failures.dart';
 import 'package:verbisense/features/auth/data/datasources/firebase_remote_data_source.dart';
