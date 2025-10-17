@@ -29,14 +29,6 @@ class Documents extends StatelessWidget {
           const SizedBox(height: 8),
 
           const DocumentsList(),
-
-          // if (error != null)
-          //   Text(
-          //     error!,
-          //     style: TextStyle(
-          //       color: ThemeColors.errorColor,
-          //     ),
-          //   ),
         ],
       ),
     );

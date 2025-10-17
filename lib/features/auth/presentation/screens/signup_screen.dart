@@ -104,64 +104,68 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 20),
                 Form(
                   key: _formKey,
-                  child: Column(
-                    children: [
-                      FormInput(
-                        keyboardType: TextInputType.name,
-                        label: CommonStrings.fullName,
-                        onSaved: (value) => {userName = value!},
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return CommonStrings.invalidName;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      FormInput(
-                        keyboardType: TextInputType.emailAddress,
-                        suffixIcon: const Icon(Icons.email_outlined),
-                        label: CommonStrings.emailAddress,
-                        onSaved: (value) => {userEmail = value!},
-                        validator: (value) {
-                          final emailPattern = RegExp(Regex.emailRegEx);
-
-                          if (value == null ||
-                              value.isEmpty ||
-                              !emailPattern.hasMatch(value)) {
-                            return CommonStrings.invalidEmailOrPhone;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      FormInput(
-                        keyboardType: TextInputType.visiblePassword,
-                        suffixIcon: InkWell(
-                          onTap: _togglePasswordVisibility,
-                          child: _isPasswordVisible
-                              ? const Icon(Icons.visibility_off_outlined)
-                              : const Icon(Icons.remove_red_eye_outlined),
+                  child: AutofillGroup(
+                    child: Column(
+                      children: [
+                        FormInput(
+                          keyboardType: TextInputType.name,
+                          label: CommonStrings.fullName,
+                          autofillHints: const [AutofillHints.name],
+                          onSaved: (value) => {userName = value!},
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return CommonStrings.invalidName;
+                            }
+                            return null;
+                          },
                         ),
-                        label: CommonStrings.password,
-                        obscureText: _isPasswordVisible,
-                        onSaved: (value) => {userPassword = value!},
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.length < 6) {
-                            return CommonStrings.invalidPassword;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      CustomElevatedButton(
-                        onTap: _handleSignup,
-                        text: CommonStrings.signup,
-                        loading: authState is AuthLoading,
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        FormInput(
+                          keyboardType: TextInputType.emailAddress,
+                          suffixIcon: const Icon(Icons.email_outlined),
+                          label: CommonStrings.emailAddress,
+                          autofillHints: const [AutofillHints.email],
+                          onSaved: (value) => {userEmail = value!},
+                          validator: (value) {
+                            final emailPattern = RegExp(Regex.emailRegEx);
+
+                            if (value == null ||
+                                value.isEmpty ||
+                                !emailPattern.hasMatch(value)) {
+                              return CommonStrings.invalidEmailOrPhone;
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        FormInput(
+                          keyboardType: TextInputType.visiblePassword,
+                          suffixIcon: InkWell(
+                            onTap: _togglePasswordVisibility,
+                            child: _isPasswordVisible
+                                ? const Icon(Icons.visibility_off_outlined)
+                                : const Icon(Icons.remove_red_eye_outlined),
+                          ),
+                          label: CommonStrings.password,
+                          obscureText: _isPasswordVisible,
+                          onSaved: (value) => {userPassword = value!},
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length < 6) {
+                              return CommonStrings.invalidPassword;
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        CustomElevatedButton(
+                          onTap: _handleSignup,
+                          text: CommonStrings.signup,
+                          loading: authState is AuthLoading,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
