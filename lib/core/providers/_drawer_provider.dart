@@ -1,10 +1,15 @@
+import 'dart:io';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:verbisense/core/config/app_logger.dart';
+import 'package:verbisense/core/resources/strings/drawer_strings.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
 import 'package:verbisense/features/drawer/data/models/history_model.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_chat_history.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_uploaded_files.dart';
+import 'package:verbisense/features/drawer/domain/usecases/upload_file.dart';
 import 'package:verbisense/init_dependencies.main.dart';
 
 sealed class DrawerState {
@@ -15,6 +20,8 @@ sealed class DrawerState {
   const factory DrawerState.loaded({
     required List<String> files,
     required List<HistoryModel> history,
+    required bool isUploading,
+    String? uploadError,
   }) = LoadedDrawerState;
   const factory DrawerState.error(String message) = ErrorDrawerState;
 }
@@ -30,10 +37,33 @@ class LoadingDrawerState extends DrawerState {
 class LoadedDrawerState extends DrawerState {
   final List<String> files;
   final List<HistoryModel> history;
+  final bool isUploading;
+  final String? uploadError;
+
   const LoadedDrawerState({
     required this.files,
     required this.history,
+    this.isUploading = false,
+    this.uploadError,
   });
+
+  LoadedDrawerState copyWith({
+    List<String>? files,
+    List<HistoryModel>? history,
+    bool? isUploading,
+    String? uploadError,
+  }) {
+    return LoadedDrawerState(
+      files: files ?? this.files,
+      history: history ?? this.history,
+      isUploading: isUploading ?? this.isUploading,
+      uploadError: uploadError,
+    );
+  }
+
+  LoadedDrawerState clearUploadError() {
+    return copyWith(uploadError: null);
+  }
 }
 
 class ErrorDrawerState extends DrawerState {
@@ -45,9 +75,11 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
   DrawerNotifier(
     this._getUploadedFiles,
     this._getChatHistories,
+    this._uploadFile,
   ) : super(const DrawerState.initial());
   final GetUploadedFiles _getUploadedFiles;
   final GetChatHistory _getChatHistories;
+  final UploadFile _uploadFile;
 
   Future<void> loadDrawerData() async {
     state = const DrawerState.loading();
@@ -70,12 +102,110 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
     state = DrawerState.loaded(
       files: files,
       history: history as List<HistoryModel>,
+      isUploading: false,
     );
 
     AppLogger.i('Loaded files: $files');
     AppLogger.i(
       'Loaded chat history: ${history.map((e) => e.toJson()).toList()}',
     );
+  }
+
+  Future<void> uploadFiles(List<File> files) async {
+    if (state is! LoadedDrawerState) return;
+
+    final currentState = state as LoadedDrawerState;
+    final currentFileCount = currentState.files.length;
+
+    if (currentFileCount >= 3) {
+      state = currentState.copyWith(
+        uploadError: DrawerStrings.maxFilesUploaded,
+      );
+      _clearUploadError();
+      return;
+    }
+
+    if (currentFileCount + files.length > 3) {
+      final remainingSlots = 3 - currentFileCount;
+      state = currentState.copyWith(
+        uploadError:
+            '${DrawerStrings.maxFilesUploaded}. You can upload $remainingSlots more file(s).',
+      );
+      _clearUploadError();
+      return;
+    }
+
+    state = currentState.copyWith(isUploading: true, uploadError: null);
+
+    for (File file in files) {
+      if (file.lengthSync() > 3 * 1024 * 1024) {
+        // 3MB limit
+        if (state is LoadedDrawerState) {
+          final currentState = state as LoadedDrawerState;
+          state = currentState.copyWith(
+            isUploading: false,
+            uploadError:
+                'File ${file.path.split('/').last} is too large.${files.indexOf(file) < files.length - 1 ? ' Moving to next file.' : ''}',
+          );
+        }
+        _clearUploadError();
+        continue;
+      }
+      await uploadFile(file);
+    }
+  }
+
+  Future<void> uploadFile(File file) async {
+    final result = await _uploadFile.call(file);
+    result.fold(
+      (failure) {
+        if (state is LoadedDrawerState) {
+          final currentState = state as LoadedDrawerState;
+          state = currentState.copyWith(
+            isUploading: false,
+            uploadError: '${failure.message} for ${file.path.split('/').last}',
+          );
+        }
+        AppLogger.e('File upload failed: $failure');
+      },
+      (fileUrl) {
+        if (state is LoadedDrawerState) {
+          final currentState = state as LoadedDrawerState;
+          final updatedFiles = [...currentState.files, fileUrl];
+          state = currentState.copyWith(
+            files: updatedFiles,
+            isUploading: false,
+          );
+        }
+        AppLogger.i('File uploaded successfully: $fileUrl');
+      },
+    );
+
+    // Future.delayed(const Duration(seconds: 2), () {
+    //   if (state is LoadedDrawerState) {
+    //     final currentState = state as LoadedDrawerState;
+    //     // final updatedFiles = [
+    //     //   ...currentState.files,
+    //     //   'https://example.com/filex',
+    //     // ];
+    //     state = currentState.copyWith(
+    //       // files: updatedFiles,
+    //       isUploading: false,
+    //       uploadError: 'Upload error from server!',
+    //     );
+    //     _clearUploadError();
+    //   }
+    //   AppLogger.i('File uploaded successfully: https://example.com/filex');
+    // });
+  }
+
+  void _clearUploadError() {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (state is LoadedDrawerState) {
+        final currentState = state as LoadedDrawerState;
+        state = currentState.clearUploadError();
+      }
+    });
   }
 }
 
@@ -84,5 +214,14 @@ final drawerNotifierProvider =
       return DrawerNotifier(
         serviceLocator<GetUploadedFiles>(),
         serviceLocator<GetChatHistory>(),
+        serviceLocator<UploadFile>(),
       );
     });
+
+final filesCountProvider = Provider<int>((ref) {
+  final drawerState = ref.watch(drawerNotifierProvider);
+  if (drawerState is LoadedDrawerState) {
+    return drawerState.files.length;
+  }
+  return 0;
+});

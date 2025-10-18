@@ -8,29 +8,27 @@ class Documents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.document_scanner),
-            title: const Text(DrawerStrings.documents),
-            onTap: () {},
-            titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.document_scanner),
+          title: const Text(DrawerStrings.documents),
+          onTap: () {},
+          titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+        ),
+        Text(
+          DrawerStrings.uploadedDocumentsMax3Mb,
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.w500,
           ),
-          Text(
-            DrawerStrings.uploadedDocumentsMax3Mb,
-            style: TextStyle(
-              color: Colors.blue,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 8),
+        ),
+        const SizedBox(height: 8),
 
-          const DocumentsList(),
-        ],
-      ),
+        const DocumentsList(),
+      ],
     );
   }
 }

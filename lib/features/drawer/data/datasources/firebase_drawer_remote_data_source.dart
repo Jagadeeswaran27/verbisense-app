@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +11,7 @@ import 'package:verbisense/features/drawer/data/models/history_model.dart';
 abstract class FirebaseDrawerRemoteDataSource {
   Future<List<String>> getUploadedFiles();
   Future<List<HistoryModel>> getChatHistory();
+  Future<String> uploadFile(File file);
 }
 
 class FirebaseDrawerRemoteDataSourceImpl
@@ -27,7 +30,7 @@ class FirebaseDrawerRemoteDataSourceImpl
         throw const ServerException('User not authenticated');
       }
       Reference filesRef = _firebaseStorage.ref().child(
-        'uploads/jgOapDc4Z2cLibC3iDiRnKfwX4j2/',
+        'uploads/${user.uid}/',
       );
       ListResult filesList = await filesRef.listAll();
 
@@ -52,7 +55,7 @@ class FirebaseDrawerRemoteDataSourceImpl
 
       CollectionReference userChatsRef = _firestore
           .collection('users')
-          .doc('jgOapDc4Z2cLibC3iDiRnKfwX4j2')
+          .doc(user.uid)
           .collection('chats');
 
       Query descendingChatsQuery = userChatsRef.orderBy(
@@ -90,6 +93,26 @@ class FirebaseDrawerRemoteDataSourceImpl
       return chatHistories;
     } catch (e) {
       throw const ServerException('Failed to retrieve chat history');
+    }
+  }
+
+  @override
+  Future<String> uploadFile(File file) async {
+    try {
+      User? user = firebaseAuth.currentUser;
+      if (user == null) {
+        throw Exception("User not logged in");
+      }
+
+      String filePath = 'uploads/${user.uid}/${file.path.split('/').last}';
+      Reference fileRef = _firebaseStorage.ref().child(filePath);
+      UploadTask uploadTask = fileRef.putFile(file);
+
+      TaskSnapshot snapshot = await uploadTask;
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      throw const ServerException('File upload failed');
     }
   }
 }

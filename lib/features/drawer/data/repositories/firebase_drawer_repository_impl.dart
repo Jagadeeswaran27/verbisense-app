@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fpdart/fpdart.dart';
 
 import 'package:verbisense/core/error/exceptions.dart';
@@ -25,6 +27,16 @@ class FirebaseDrawerRepositoryImpl implements FirebaseDrawerRepository {
     try {
       final histories = await firebaseRemoteDataSourceImpl.getChatHistory();
       return Right(histories);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadFile(File file) async {
+    try {
+      final fileUrl = await firebaseRemoteDataSourceImpl.uploadFile(file);
+      return Right(fileUrl);
     } on ServerException catch (e) {
       return Left(Failure(e.message));
     }

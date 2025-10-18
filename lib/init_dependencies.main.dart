@@ -17,6 +17,7 @@ import 'package:verbisense/features/drawer/data/repositories/firebase_drawer_rep
 import 'package:verbisense/features/drawer/domain/repository/firebase_drawer_repository.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_chat_history.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_uploaded_files.dart';
+import 'package:verbisense/features/drawer/domain/usecases/upload_file.dart';
 import 'package:verbisense/firebase_options.dart';
 
 final serviceLocator = GetIt.instance;
@@ -71,5 +72,8 @@ void _initDrawer() {
     )
     ..registerFactory<GetChatHistory>(
       () => GetChatHistory(serviceLocator()),
+    )
+    ..registerFactory<UploadFile>(
+      () => UploadFile(serviceLocator()),
     );
 }

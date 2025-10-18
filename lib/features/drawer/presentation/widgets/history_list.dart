@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:verbisense/core/config/app_logger.dart';
 
 import 'package:verbisense/core/providers/providers.dart';
 import 'package:verbisense/core/themes/colors.dart';
 import 'package:verbisense/core/utils/helper.dart';
+import 'package:verbisense/core/widgets/loader/custom_shimmer.dart';
 
 class HistoryList extends ConsumerWidget {
   const HistoryList({super.key});
@@ -15,62 +16,10 @@ class HistoryList extends ConsumerWidget {
     final drawerState = ref.watch(drawerNotifierProvider);
 
     if (drawerState is LoadingDrawerState) {
-      return Column(
-        children: [
-          const SizedBox(height: 15),
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-        ],
+      return CustomShimmer(
+        verticalSpacing: 20,
+        height: 25,
+        itemCount: 4,
       );
     } else if (drawerState is ErrorDrawerState) {
       return Text(
@@ -78,6 +27,31 @@ class HistoryList extends ConsumerWidget {
         style: TextStyle(color: ThemeColors.errorColor),
       );
     } else if (drawerState is LoadedDrawerState) {
+      AppLogger.i('Loaded history items: ${drawerState.history.length}');
+      if (drawerState.history.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 16),
+              Icon(
+                Icons.history,
+                size: 40,
+                color: Colors.grey[400],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No History Yet',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 15),
+            ],
+          ),
+        );
+      }
       return Column(
         children: drawerState.history.map(
           (historyItem) {

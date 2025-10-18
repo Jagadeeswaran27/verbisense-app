@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:verbisense/core/config/app_logger.dart';
 
 import 'package:verbisense/core/providers/providers.dart';
 import 'package:verbisense/core/resources/strings/drawer_strings.dart';
 import 'package:verbisense/core/themes/colors.dart';
 import 'package:verbisense/core/themes/fonts.dart';
 import 'package:verbisense/core/utils/helper.dart';
+import 'package:verbisense/core/widgets/loader/custom_shimmer.dart';
 
 class DocumentsList extends ConsumerWidget {
   const DocumentsList({super.key});
+
+  Future<void> _openFile(String url) async {
+    AppLogger.i(url);
+    try {
+      Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        throw 'Could not launch $uri';
+      }
+    } catch (e) {
+      debugPrint('Error opening file: $e');
+      throw 'Error opening file: $e';
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,47 +38,10 @@ class DocumentsList extends ConsumerWidget {
     final Size screenSize = MediaQuery.of(context).size;
 
     if (drawerState is LoadingDrawerState) {
-      return Column(
-        children: [
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 22,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 22,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[50]!,
-            child: Container(
-              width: double.infinity,
-              height: 22,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-        ],
+      return CustomShimmer(
+        verticalSpacing: 10,
+        height: 22,
+        itemCount: 3,
       );
     } else if (drawerState is ErrorDrawerState) {
       return Text(
@@ -86,7 +69,7 @@ class DocumentsList extends ConsumerWidget {
                 ),
                 const Spacer(),
                 GestureDetector(
-                  // onTap: () => openFile(fileItem),
+                  onTap: () => _openFile(fileItem),
                   child: const Icon(
                     Icons.remove_red_eye_outlined,
                     size: 20,
