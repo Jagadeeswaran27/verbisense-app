@@ -12,6 +12,7 @@ abstract class FirebaseDrawerRemoteDataSource {
   Future<List<String>> getUploadedFiles();
   Future<List<HistoryModel>> getChatHistory();
   Future<String> uploadFile(File file);
+  Future<void> deleteFile(String fileName);
 }
 
 class FirebaseDrawerRemoteDataSourceImpl
@@ -113,6 +114,22 @@ class FirebaseDrawerRemoteDataSourceImpl
       return downloadUrl;
     } catch (e) {
       throw const ServerException('File upload failed');
+    }
+  }
+
+  @override
+  Future<void> deleteFile(String fileName) async {
+    try {
+      User? user = firebaseAuth.currentUser;
+      if (user == null) {
+        throw Exception("User not authenticated");
+      }
+
+      String filePath = 'uploads/${user.uid}/$fileName';
+      Reference fileRef = _firebaseStorage.ref().child(filePath);
+      await fileRef.delete();
+    } catch (e) {
+      throw const ServerException('File deletion failed');
     }
   }
 }

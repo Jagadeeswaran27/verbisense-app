@@ -9,4 +9,5 @@ abstract class FirebaseDrawerRepository {
   Future<Either<Failure, List<String>>> getUploadedFiles();
   Future<Either<Failure, List<HistoryModel>>> getChatHistory();
   Future<Either<Failure, String>> uploadFile(File file);
+  Future<Either<Failure, void>> deleteFile(String fileName);
 }

@@ -122,3 +122,20 @@ extension ThemeExtension on TextTheme {
   TextStyle get errorBodyMedium =>
       bodyMedium!.copyWith(color: ThemeColors.errorColor);
 }
+
+extension TextStyleExtensions on TextStyle? {
+  TextStyle withOpacity(double opacity) {
+    assert(
+      opacity >= 0.0 && opacity <= 1.0,
+      'Opacity must be a value between 0.0 and 1.0',
+    );
+
+    if (this == null || this!.color == null) {
+      return this ?? const TextStyle();
+    }
+
+    return this!.copyWith(
+      color: this!.color!.withAlpha((opacity * 255).round()),
+    );
+  }
+}

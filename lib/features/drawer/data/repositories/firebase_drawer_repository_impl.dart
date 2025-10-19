@@ -41,4 +41,14 @@ class FirebaseDrawerRepositoryImpl implements FirebaseDrawerRepository {
       return Left(Failure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteFile(String fileName) async {
+    try {
+      await firebaseRemoteDataSourceImpl.deleteFile(fileName);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
+    }
+  }
 }

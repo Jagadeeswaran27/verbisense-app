@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/resources/strings/drawer_strings.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
 import 'package:verbisense/features/drawer/data/models/history_model.dart';
+import 'package:verbisense/features/drawer/domain/usecases/delete_file.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_chat_history.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_uploaded_files.dart';
 import 'package:verbisense/features/drawer/domain/usecases/upload_file.dart';
@@ -22,6 +22,7 @@ sealed class DrawerState {
     required List<HistoryModel> history,
     required bool isUploading,
     String? uploadError,
+    String? deletingFileName,
   }) = LoadedDrawerState;
   const factory DrawerState.error(String message) = ErrorDrawerState;
 }
@@ -39,12 +40,14 @@ class LoadedDrawerState extends DrawerState {
   final List<HistoryModel> history;
   final bool isUploading;
   final String? uploadError;
+  final String? deletingFileName;
 
   const LoadedDrawerState({
     required this.files,
     required this.history,
     this.isUploading = false,
     this.uploadError,
+    this.deletingFileName,
   });
 
   LoadedDrawerState copyWith({
@@ -52,12 +55,14 @@ class LoadedDrawerState extends DrawerState {
     List<HistoryModel>? history,
     bool? isUploading,
     String? uploadError,
+    String? deletingFileName,
   }) {
     return LoadedDrawerState(
       files: files ?? this.files,
       history: history ?? this.history,
       isUploading: isUploading ?? this.isUploading,
       uploadError: uploadError,
+      deletingFileName: deletingFileName,
     );
   }
 
@@ -76,10 +81,12 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
     this._getUploadedFiles,
     this._getChatHistories,
     this._uploadFile,
+    this._deleteFile,
   ) : super(const DrawerState.initial());
   final GetUploadedFiles _getUploadedFiles;
   final GetChatHistory _getChatHistories;
   final UploadFile _uploadFile;
+  final DeleteFile _deleteFile;
 
   Future<void> loadDrawerData() async {
     state = const DrawerState.loading();
@@ -153,6 +160,8 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
       }
       await uploadFile(file);
     }
+    final updatedState = state as LoadedDrawerState;
+    state = updatedState.copyWith(isUploading: false);
   }
 
   Future<void> uploadFile(File file) async {
@@ -172,31 +181,40 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
         if (state is LoadedDrawerState) {
           final currentState = state as LoadedDrawerState;
           final updatedFiles = [...currentState.files, fileUrl];
-          state = currentState.copyWith(
-            files: updatedFiles,
-            isUploading: false,
-          );
+          state = currentState.copyWith(files: updatedFiles);
         }
         AppLogger.i('File uploaded successfully: $fileUrl');
       },
     );
+  }
 
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   if (state is LoadedDrawerState) {
-    //     final currentState = state as LoadedDrawerState;
-    //     // final updatedFiles = [
-    //     //   ...currentState.files,
-    //     //   'https://example.com/filex',
-    //     // ];
-    //     state = currentState.copyWith(
-    //       // files: updatedFiles,
-    //       isUploading: false,
-    //       uploadError: 'Upload error from server!',
-    //     );
-    //     _clearUploadError();
-    //   }
-    //   AppLogger.i('File uploaded successfully: https://example.com/filex');
-    // });
+  Future<void> deleteFile(String fileName) async {
+    if (state is! LoadedDrawerState) return;
+
+    final currentState = state as LoadedDrawerState;
+    state = currentState.copyWith(deletingFileName: fileName);
+
+    final result = await _deleteFile.call(fileName);
+    result.fold(
+      (failure) {
+        AppLogger.e('File deletion failed: $failure');
+      },
+      (_) {
+        if (state is LoadedDrawerState) {
+          final currentState = state as LoadedDrawerState;
+          final updatedFiles = currentState.files
+              .where((file) => !file.contains(fileName))
+              .toList();
+          state = currentState.copyWith(files: updatedFiles);
+        }
+        AppLogger.i('File deleted successfully: $fileName');
+      },
+    );
+
+    if (state is LoadedDrawerState) {
+      final currentState = state as LoadedDrawerState;
+      state = currentState.copyWith(deletingFileName: null);
+    }
   }
 
   void _clearUploadError() {
@@ -215,13 +233,6 @@ final drawerNotifierProvider =
         serviceLocator<GetUploadedFiles>(),
         serviceLocator<GetChatHistory>(),
         serviceLocator<UploadFile>(),
+        serviceLocator<DeleteFile>(),
       );
     });
-
-final filesCountProvider = Provider<int>((ref) {
-  final drawerState = ref.watch(drawerNotifierProvider);
-  if (drawerState is LoadedDrawerState) {
-    return drawerState.files.length;
-  }
-  return 0;
-});

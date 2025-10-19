@@ -15,6 +15,7 @@ import 'package:verbisense/features/auth/domain/usecases/update_fcm.dart';
 import 'package:verbisense/features/drawer/data/datasources/firebase_drawer_remote_data_source.dart';
 import 'package:verbisense/features/drawer/data/repositories/firebase_drawer_repository_impl.dart';
 import 'package:verbisense/features/drawer/domain/repository/firebase_drawer_repository.dart';
+import 'package:verbisense/features/drawer/domain/usecases/delete_file.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_chat_history.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_uploaded_files.dart';
 import 'package:verbisense/features/drawer/domain/usecases/upload_file.dart';
@@ -75,5 +76,8 @@ void _initDrawer() {
     )
     ..registerFactory<UploadFile>(
       () => UploadFile(serviceLocator()),
+    )
+    ..registerFactory<DeleteFile>(
+      () => DeleteFile(serviceLocator()),
     );
 }

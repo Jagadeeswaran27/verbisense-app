@@ -32,6 +32,12 @@ class DocumentsList extends ConsumerWidget {
     }
   }
 
+  Future<void> _handleDeleteFile(WidgetRef ref, String fileUrl) async {
+    AppLogger.i('Deleting file: $fileUrl');
+    final String fileName = getFilenameFromUrl(fileUrl);
+    await ref.read(drawerNotifierProvider.notifier).deleteFile(fileName);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final drawerState = ref.watch(drawerNotifierProvider);
@@ -52,6 +58,8 @@ class DocumentsList extends ConsumerWidget {
       if (drawerState.files.isEmpty) {
         return Text(DrawerStrings.noFilesUploaded);
       }
+      final isDeleting = drawerState.deletingFileName != null;
+      final deletingFileName = drawerState.deletingFileName;
       return Column(
         children: drawerState.files.map((fileItem) {
           return Container(
@@ -63,7 +71,11 @@ class DocumentsList extends ConsumerWidget {
                   width: screenSize.width * 0.55,
                   child: Text(
                     getFilenameFromUrl(fileItem),
-                    style: Theme.of(context).textTheme.bodySmallBlack,
+                    style: deletingFileName == getFilenameFromUrl(fileItem)
+                        ? Theme.of(
+                            context,
+                          ).textTheme.bodySmallBlack.withOpacity(0.5)
+                        : Theme.of(context).textTheme.bodySmallBlack,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -77,10 +89,9 @@ class DocumentsList extends ConsumerWidget {
                 ),
                 const SizedBox(width: 5),
                 GestureDetector(
-                  // onTap: () => handleDeleteFile(
-                  //   fileItem,
-                  //   getFilenameFromUrl(fileItem),
-                  // ),
+                  onTap: isDeleting
+                      ? null
+                      : () => _handleDeleteFile(ref, fileItem),
                   child: const Icon(
                     Icons.delete,
                     size: 20,
