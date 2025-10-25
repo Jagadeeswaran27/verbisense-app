@@ -19,7 +19,7 @@ enum FirebaseErrorCode {
   final String code;
 }
 
-extension FirebaseErroCodeX on FirebaseErrorCode {
+extension FirebaseErrorCodeX on FirebaseErrorCode {
   static FirebaseErrorCode? fromCode(String code) {
     try {
       return FirebaseErrorCode.values.firstWhere(

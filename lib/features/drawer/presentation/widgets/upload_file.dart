@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/providers/providers.dart';
 import 'package:verbisense/core/widgets/action_row.dart';
+import 'package:verbisense/core/config/app_logger.dart';
 
 class UploadFile extends ConsumerStatefulWidget {
   const UploadFile({super.key});
@@ -51,6 +52,7 @@ class _UploadFileState extends ConsumerState<UploadFile> {
     final bool isDisabled = _getIsDisabled(drawerState);
     final String uploadText = _getUploadText(drawerState);
     final String? uploadFileError = _getUploadError(drawerState);
+    AppLogger.i(uploadFileError ?? 'No upload error');
 
     return Column(
       children: [

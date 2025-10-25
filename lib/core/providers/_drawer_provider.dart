@@ -150,7 +150,7 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
         if (state is LoadedDrawerState) {
           final currentState = state as LoadedDrawerState;
           state = currentState.copyWith(
-            isUploading: false,
+            isUploading: files.indexOf(file) == files.length - 1 ? false : true,
             uploadError:
                 'File ${file.path.split('/').last} is too large.${files.indexOf(file) < files.length - 1 ? ' Moving to next file.' : ''}',
           );
@@ -158,10 +158,28 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
         _clearUploadError();
         continue;
       }
+      final fileName = file.path.split('/').last;
+      if (currentState.files.any(
+        (file) => Uri.decodeComponent(file).contains(fileName),
+      )) {
+        if (state is LoadedDrawerState) {
+          final currentState = state as LoadedDrawerState;
+          state = currentState.copyWith(
+            isUploading: files.indexOf(file) == files.length - 1 ? false : true,
+            uploadError: 'File $fileName is already uploaded.',
+          );
+        }
+        _clearUploadError();
+        continue;
+      }
       await uploadFile(file);
     }
+    AppLogger.i('Finished uploading files.');
     final updatedState = state as LoadedDrawerState;
-    state = updatedState.copyWith(isUploading: false);
+    state = updatedState.copyWith(
+      isUploading: false,
+      uploadError: updatedState.uploadError,
+    );
   }
 
   Future<void> uploadFile(File file) async {
@@ -197,14 +215,17 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
     final result = await _deleteFile.call(fileName);
     result.fold(
       (failure) {
-        AppLogger.e('File deletion failed: $failure');
+        AppLogger.e('File deletion failed: ${failure.message}');
       },
       (_) {
         if (state is LoadedDrawerState) {
           final currentState = state as LoadedDrawerState;
+          AppLogger.i('Current files before deletion: ${currentState.files}');
+          AppLogger.i('Deleting file: $fileName');
           final updatedFiles = currentState.files
-              .where((file) => !file.contains(fileName))
+              .where((file) => !Uri.decodeComponent(file).contains(fileName))
               .toList();
+          AppLogger.i('Updated files after deletion: $updatedFiles');
           state = currentState.copyWith(files: updatedFiles);
         }
         AppLogger.i('File deleted successfully: $fileName');

@@ -35,7 +35,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   FirebaseRemoteDataSourceImpl(this.firebaseAuth);
 
   static String getFirebaseError(FirebaseException e) {
-    final errorCode = FirebaseErroCodeX.fromCode(e.code);
+    final errorCode = FirebaseErrorCodeX.fromCode(e.code);
     if (errorCode != null) {
       return errorCode.message;
     } else {
