@@ -3,7 +3,7 @@ name: Flutter Clean Arch Build
 on:
   push:
     branches:
-      - develop
+      - feat/clean-arch
 
 
 jobs:
