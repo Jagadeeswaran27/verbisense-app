@@ -17,3 +17,7 @@ void goToScreen(BuildContext context, String screenPath) {
 void goToScreenNamed(BuildContext context, String screenName) {
   context.goNamed(screenName);
 }
+
+void popScreen(BuildContext context) {
+  context.pop();
+}

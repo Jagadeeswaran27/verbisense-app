@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:verbisense/core/resources/strings/common_strings.dart';
+import 'package:verbisense/features/drawer/presentation/widgets/custom_drawer_header.dart';
 import 'package:verbisense/features/drawer/presentation/widgets/documents.dart';
 import 'package:verbisense/features/drawer/presentation/widgets/history.dart';
 import 'package:verbisense/features/drawer/presentation/widgets/upload_file.dart';
 
 class CustomDrawer extends ConsumerStatefulWidget {
-  const CustomDrawer({
-    super.key,
-    required this.deleteFile,
-    required this.getChatData,
-    required this.activeDate,
-  });
-
-  final Future<bool> Function(String url, String fileName) deleteFile;
-  final void Function(String date) getChatData;
-  final String activeDate;
+  const CustomDrawer({super.key});
 
   @override
   ConsumerState createState() => CustomDrawerState();
@@ -38,23 +30,8 @@ class CustomDrawerState extends ConsumerState<CustomDrawer> {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                CommonStrings.verbisense,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          UploadFile(),
+          const CustomDrawerHeader(),
+          const UploadFile(),
           const Divider(),
           const Documents(),
           const Spacer(),

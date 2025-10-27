@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verbisense/core/config/app_logger.dart';
-import 'package:verbisense/core/providers/providers.dart';
 
+import 'package:verbisense/core/providers/providers.dart';
+import 'package:verbisense/core/widgets/common/custom_app_bar.dart';
+import 'package:verbisense/core/widgets/common/settings_drawer.dart';
 import 'package:verbisense/features/auth/presentation/provider/auth_provider.dart';
-import 'package:verbisense/features/auth/presentation/widgets/custom_elevated_button.dart';
+import 'package:verbisense/features/chat/presentation/widgets/chat_input.dart';
 import 'package:verbisense/features/drawer/presentation/widgets/custom_drawer.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -16,6 +17,20 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
+  bool _isSettingsDrawerOpen = false;
+
+  void _toggleSettingsDrawer() {
+    setState(() {
+      _isSettingsDrawerOpen = !_isSettingsDrawerOpen;
+    });
+  }
+
+  void _closeSettingsDrawer() {
+    setState(() {
+      _isSettingsDrawerOpen = false;
+    });
+  }
+
   void _handleSignOut() {
     ref.read(authProvider.notifier).signOut();
   }
@@ -36,35 +51,46 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
+      appBar: CustomAppBar(toggleSettingsDrawer: _toggleSettingsDrawer),
       drawer: Drawer(
-        child: CustomDrawer(
-          // uploadFile: (File file) {
-          //   AppLogger.i('Upload file: ${file.path}');
-          //   return Future.value(true);
-          // },
-          deleteFile: (String url, String fileName) {
-            AppLogger.i('Delete file: $fileName from $url');
-            return Future.value(true);
-          },
-          getChatData: (String date) => {},
-          activeDate: '',
-        ),
+        child: CustomDrawer(),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          if (_isSettingsDrawerOpen) {
+            _closeSettingsDrawer();
+          }
+        },
+        child: Stack(
           children: [
-            Text(
-              'Home Screen!',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Column(
+              children: [
+                // Expanded(
+                //   child: widget.chatMessages.isEmpty
+                //       ? const WelcomeStringWidget()
+                //       : ChatDataDisplayWidget(
+                //           isSending: widget.isSending,
+                //           chatMessages: widget.chatMessages,
+                //         ),
+                // ),
+                Expanded(
+                  child: Container(), // Placeholder for chat messages
+                ),
+                ChatInput(
+                  sendChatData: (String s) {},
+                ),
+              ],
             ),
-            CustomElevatedButton(
-              onTap: _handleSignOut,
-              text: 'Sign Out',
-            ),
+            if (_isSettingsDrawerOpen)
+              Positioned(
+                top: 5,
+                right: 10,
+                child: SettingsDrawer(
+                  closeSettingsDrawer: _toggleSettingsDrawer,
+                  logout: _handleSignOut,
+                ),
+              ),
           ],
         ),
       ),

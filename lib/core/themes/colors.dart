@@ -19,4 +19,11 @@ class ThemeColors {
   static final Color cardBorder = Pigment.fromString('#C9EBFF');
   static final Color red = Pigment.fromString('#D94646');
   static final Color chatInput = Pigment.fromString('#f3f4f6');
+  static const Color grey = Colors.grey;
+}
+
+extension ThemeColorsExtension on Color {
+  Color withOpacityValue(double opacity) {
+    return withAlpha((opacity * 255).round());
+  }
 }

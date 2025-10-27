@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/providers/providers.dart';
-import 'package:verbisense/core/widgets/action_row.dart';
+import 'package:verbisense/core/widgets/common/action_row.dart';
 import 'package:verbisense/core/config/app_logger.dart';
 
 class UploadFile extends ConsumerStatefulWidget {
