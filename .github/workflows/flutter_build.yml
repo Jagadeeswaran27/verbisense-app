@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - feat/clean-arch
+      
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 
 jobs:
