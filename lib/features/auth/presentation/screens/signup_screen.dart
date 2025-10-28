@@ -162,7 +162,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         CustomElevatedButton(
                           onTap: _handleSignup,
                           text: CommonStrings.signup,
-                          loading: authState is AuthLoading,
+                          loading: authState is AuthButtonLoading,
                         ),
                       ],
                     ),

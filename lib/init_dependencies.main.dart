@@ -9,6 +9,7 @@ import 'package:verbisense/features/auth/data/repositories/firebase_auth_reposit
 import 'package:verbisense/features/auth/domain/repository/firebase_auth_repository.dart';
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
+import 'package:verbisense/features/auth/domain/usecases/get_current_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/google_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/signout.dart';
 import 'package:verbisense/features/auth/domain/usecases/update_fcm.dart';
@@ -55,8 +56,11 @@ void _initAuth() {
     ..registerFactory<Signout>(
       () => Signout(serviceLocator()),
     )
-    ..registerFactory(
+    ..registerFactory<UpdateFcm>(
       () => UpdateFcm(serviceLocator()),
+    )
+    ..registerFactory<GetCurrentUser>(
+      () => GetCurrentUser(serviceLocator()),
     );
 }
 

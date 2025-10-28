@@ -1,11 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:verbisense/core/entities/user.dart';
 import 'package:verbisense/core/error/exceptions.dart';
 import 'package:verbisense/core/error/failures.dart';
 import 'package:verbisense/features/auth/data/datasources/firebase_remote_data_source.dart';
-import 'package:verbisense/features/auth/data/models/user_model.dart';
 import 'package:verbisense/features/auth/domain/repository/firebase_auth_repository.dart';
 
 class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
@@ -57,34 +56,18 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
   }
 
   @override
-  Stream<Either<Failure, User>> userAuthStateChanges() async* {
+  Future<Either<Failure, User?>> getCurrentUser() async {
     try {
-      await for (final firebaseUser
-          in remoteDataSource.userAuthStateChanges()) {
-        if (firebaseUser == null) {
-          yield Left(Failure('User is not authenticated'));
-        } else {
-          try {
-            final userDoc = await FirebaseFirestore.instance
-                .collection('users')
-                .doc(firebaseUser.uid)
-                .get();
-
-            if (userDoc.exists) {
-              final user = UserModel.fromJson(userDoc.data()!);
-              yield Right(user);
-            } else {
-              yield Left(Failure('User document not found.'));
-            }
-          } catch (e) {
-            yield Left(Failure('Failed to fetch user document: $e'));
-          }
-        }
-      }
-    } catch (e) {
-      yield Left(Failure(e.toString()));
+      final user = await remoteDataSource.getCurrentUser();
+      return Right(user);
+    } on ServerException catch (e) {
+      return Left(Failure(e.message));
     }
   }
+
+  @override
+  Stream<firebase_auth.User?> userAuthStateChanges() =>
+      remoteDataSource.userAuthStateChanges();
 
   @override
   Future<Either<Failure, void>> signOut() async {

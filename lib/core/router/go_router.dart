@@ -1,45 +1,62 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:verbisense/core/router/app_routes.dart';
-import 'package:verbisense/features/auth/presentation/provider/auth_state_provider.dart';
-
-// in your router provider file
+import 'package:verbisense/features/auth/presentation/provider/auth_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateStreamProvider);
-
   return GoRouter(
     initialLocation: AppRoutes.init.path,
     routes: AppRoutes.values.map((e) => e.route).toList(),
+    refreshListenable: GoRouterRefreshStream(
+      ref.watch(authProvider.notifier).stream,
+    ),
     redirect: (context, state) {
-      final isAuthenticated = authState.hasValue && authState.value != null;
+      final authState = ref.read(authProvider);
+      final isAuthenticated = authState is AuthSuccess;
       final isOnAuthPage = _checkIsOnAuthPage(state.fullPath);
 
-      if (authState.isLoading) {
+      if (authState is AuthLoading) {
         return AppRoutes.loading.path;
       }
 
       if (isAuthenticated && isOnAuthPage) {
         return AppRoutes.chat.path;
       }
+
       if (!isAuthenticated && !isOnAuthPage) {
-        return AppRoutes.login.path;
+        return AppRoutes.getStarted.path;
       }
 
       return null;
     },
-    errorBuilder: (context, state) =>
-        const Placeholder(), // Replace with a proper error screen
+    errorBuilder: (context, state) => const Placeholder(),
   );
 });
 
-// _checkIsOnAuthPage function remains the same
-
-bool _checkIsOnAuthPage(path) {
+bool _checkIsOnAuthPage(String? path) {
   return path == AppRoutes.login.path ||
       path == AppRoutes.signup.path ||
-      path == AppRoutes.init.path;
+      path == AppRoutes.init.path ||
+      path == AppRoutes.loading.path;
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    _subscription = stream.asBroadcastStream().listen((_) {
+      notifyListeners();
+    });
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }

@@ -66,10 +66,12 @@ flutter:
           weight: 300
 
 
-flutter_native_splash:
-  color: "#FFFFFF"
-  android: true
-  ios: true
-  web: false
-  android_12:
-    color: "#FFFFFF"
+# flutter_native_splash:
+#   color: "#FFFFFF"
+#   image: assets/images/white.png
+#   android: true
+#   ios: true
+#   web: false
+#   android_12:
+#     color: "#FFFFFF"
+#     image: assets/images/white.png

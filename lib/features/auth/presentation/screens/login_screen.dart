@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/resources/strings/common_strings.dart';
@@ -72,6 +73,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         showSnackBar(context, next.message, error: true);
       } else if (next is AuthSuccess) {
         _clearInputs();
+        goToScreen(context, AppRoutes.chat.path);
       }
     });
     return Scaffold(
@@ -138,7 +140,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         CustomElevatedButton(
                           onTap: _handleLogin,
                           text: CommonStrings.login,
-                          loading: authState is AuthLoading,
+                          loading: authState is AuthButtonLoading,
                         ),
                       ],
                     ),

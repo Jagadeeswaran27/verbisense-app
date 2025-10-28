@@ -21,6 +21,7 @@ abstract class FirebaseRemoteDataSource {
     String password,
   );
   Future<UserModel> signInWithGoogle();
+  Future<UserModel?> getCurrentUser();
   Future<void> signOut();
   Stream<User?> userAuthStateChanges();
   Future<bool> updateFcmToken(String token);
@@ -165,10 +166,28 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
-  Stream<User?> userAuthStateChanges() async* {
-    yield* firebaseAuth.authStateChanges().map((user) {
-      return user;
-    });
+  Future<UserModel?> getCurrentUser() async {
+    try {
+      final user = firebaseAuth.currentUser;
+      if (user == null) {
+        throw const ServerException(FirebaseErrorStrings.userDataIsNull);
+      }
+      AppLogger.i('Current User UID: ${user.uid}');
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      if (!userDoc.exists) {
+        throw const ServerException(FirebaseErrorStrings.userDataNotFound);
+      }
+      AppLogger.i('User Document Data: ${userDoc.data().toString()}');
+      return UserModel.fromJson(userDoc.data()!);
+    } catch (e) {
+      AppLogger.e(e.toString());
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Stream<User?> userAuthStateChanges() {
+    return firebaseAuth.authStateChanges().map((user) => user);
   }
 
   @override
