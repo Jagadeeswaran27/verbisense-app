@@ -50,6 +50,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "406831934655-37b0um590s4isj6m4gt5dcpvndccpvn8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.verbisense",
+            "certificate_hash": "decdfe346e7369a9a9506a8d3dca5903e6a4f024"
+          }
+        },
+        {
           "client_id": "406831934655-45m0ai4b0a151mp2tvoskrvrbem1ps5g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
