@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - feat/clean-arch
-      
+
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
@@ -12,50 +12,56 @@ concurrency:
 permissions:
   contents: write
 
-
 jobs:
-    build:
-        name: Build Release Apk
-        runs-on: ubuntu-latest
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
 
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          - name: Create .env file
-            run: |
-              echo "FIREBASE_ANDROID_API_KEY=${{ secrets.FIREBASE_ANDROID_API_KEY }}" >> .env
-              echo "FIREBASE_ANDROID_APP_ID=${{ secrets.FIREBASE_ANDROID_APP_ID }}" >> .env
-              echo "FIREBASE_ANDROID_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_ANDROID_MESSAGING_SENDER_ID }}" >> .env
-              echo "FIREBASE_ANDROID_PROJECT_ID=${{ secrets.FIREBASE_ANDROID_PROJECT_ID }}" >> .env
-              echo "FIREBASE_ANDROID_STORAGE_BUCKET=${{ secrets.FIREBASE_ANDROID_STORAGE_BUCKET }}" >> .env
-              echo "FIREBASE_IOS_API_KEY=${{ secrets.FIREBASE_IOS_API_KEY }}" >> .env
-              echo "FIREBASE_IOS_APP_ID=${{ secrets.FIREBASE_IOS_APP_ID }}" >> .env
-              echo "FIREBASE_IOS_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_IOS_MESSAGING_SENDER_ID }}" >> .env
-              echo "FIREBASE_IOS_PROJECT_ID=${{ secrets.FIREBASE_IOS_PROJECT_ID }}" >> .env
-              echo "FIREBASE_IOS_STORAGE_BUCKET=${{ secrets.FIREBASE_IOS_STORAGE_BUCKET }}" >> .env
-              echo "FIREBASE_IOS_ANDROID_CLIENT_ID=${{ secrets.FIREBASE_IOS_ANDROID_CLIENT_ID }}" >> .env
-              echo "FIREBASE_IOS_IOS_CLIENT_ID=${{ secrets.FIREBASE_IOS_IOS_CLIENT_ID }}" >> .env
-              echo "FIREBASE_IOS_IOS_BUNDLE_ID=${{ secrets.FIREBASE_IOS_IOS_BUNDLE_ID }}" >> .env
+      - name: Create .env file
+        run: |
+          echo "FIREBASE_ANDROID_API_KEY=${{ secrets.FIREBASE_ANDROID_API_KEY }}" >> .env
+          echo "FIREBASE_ANDROID_APP_ID=${{ secrets.FIREBASE_ANDROID_APP_ID }}" >> .env
+          echo "FIREBASE_ANDROID_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_ANDROID_MESSAGING_SENDER_ID }}" >> .env
+          echo "FIREBASE_ANDROID_PROJECT_ID=${{ secrets.FIREBASE_ANDROID_PROJECT_ID }}" >> .env
+          echo "FIREBASE_ANDROID_STORAGE_BUCKET=${{ secrets.FIREBASE_ANDROID_STORAGE_BUCKET }}" >> .env
+          echo "FIREBASE_IOS_API_KEY=${{ secrets.FIREBASE_IOS_API_KEY }}" >> .env
+          echo "FIREBASE_IOS_APP_ID=${{ secrets.FIREBASE_IOS_APP_ID }}" >> .env
+          echo "FIREBASE_IOS_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_IOS_MESSAGING_SENDER_ID }}" >> .env
+          echo "FIREBASE_IOS_PROJECT_ID=${{ secrets.FIREBASE_IOS_PROJECT_ID }}" >> .env
+          echo "FIREBASE_IOS_STORAGE_BUCKET=${{ secrets.FIREBASE_IOS_STORAGE_BUCKET }}" >> .env
+          echo "FIREBASE_IOS_ANDROID_CLIENT_ID=${{ secrets.FIREBASE_IOS_ANDROID_CLIENT_ID }}" >> .env
+          echo "FIREBASE_IOS_IOS_CLIENT_ID=${{ secrets.FIREBASE_IOS_IOS_CLIENT_ID }}" >> .env
+          echo "FIREBASE_IOS_IOS_BUNDLE_ID=${{ secrets.FIREBASE_IOS_IOS_BUNDLE_ID }}" >> .env
 
-          - name: Setup Flutter
-            uses: subosito/flutter-action@v2
-            with:
-              flutter-version: '3.35.7'
-              channel: 'stable'
-        
-          - name: Install dependencies
-            run: flutter pub get
-        
-          - name: Build Release APK
-            run: flutter build apk --release
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release-key.jks
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEYALIAS }}" >> android/key.properties
+          echo "storeFile=release-key.jks" >> android/key.properties
 
-          - name: Upload to GitHub Release
-            uses: softprops/action-gh-release@v1
-            with:
-              tag_name: nightly-build
-              name: Nightly Build
-              files: build/app/outputs/flutter-apk/app-release.apk
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: 'stable'
 
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: nightly-${{ github.run_number }}
+          name: Nightly Build ${{ github.run_number }}
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
