@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -11,6 +12,7 @@ import 'package:verbisense/core/domain/usecases/get_current_user.dart';
 import 'package:verbisense/core/domain/usecases/signout.dart';
 import 'package:verbisense/core/domain/usecases/update_fcm.dart';
 import 'package:verbisense/core/entities/user.dart';
+import 'package:verbisense/core/providers/app_reset_provider.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
 import 'package:verbisense/init_dependencies.main.dart';
 
@@ -47,12 +49,14 @@ class AuthCoreProviderNotifier extends StateNotifier<AuthCoreState> {
   final UpdateFcm _updateFcm;
   final FirebaseAuthCoreRepository _authRepository;
   late final StreamSubscription<firebase_auth.User?> _authSubscription;
+  final Ref _ref;
 
   AuthCoreProviderNotifier(
     this._getCurrentUser,
     this._signout,
     this._updateFcm,
     this._authRepository,
+    this._ref,
   ) : super(const AuthCoreState.initial()) {
     _initializeAuthListener();
   }
@@ -100,6 +104,7 @@ class AuthCoreProviderNotifier extends StateNotifier<AuthCoreState> {
         state = AuthCoreState.error(failure.message);
       },
       (_) {
+        _ref.read(appStateResetProvider)(_ref);
         state = const AuthCoreState.initial();
       },
     );
@@ -148,5 +153,6 @@ final authCoreProvider =
         serviceLocator<Signout>(),
         serviceLocator<UpdateFcm>(),
         serviceLocator<FirebaseAuthCoreRepository>(),
+        ref,
       );
     });

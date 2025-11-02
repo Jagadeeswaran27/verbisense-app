@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verbisense/core/config/app_logger.dart';
 
-import 'package:verbisense/core/providers/providers.dart';
+import 'package:verbisense/core/config/app_logger.dart';
+import 'package:verbisense/core/providers/drawer_provider.dart';
 import 'package:verbisense/core/themes/colors.dart';
 import 'package:verbisense/core/utils/helper.dart';
 import 'package:verbisense/core/widgets/loader/custom_shimmer.dart';

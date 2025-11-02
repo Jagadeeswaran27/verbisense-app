@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:verbisense/core/providers/providers.dart';
+import 'package:verbisense/core/providers/drawer_provider.dart';
 import 'package:verbisense/core/widgets/common/action_row.dart';
 import 'package:verbisense/core/config/app_logger.dart';
 

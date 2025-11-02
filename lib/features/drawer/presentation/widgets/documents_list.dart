@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:verbisense/core/config/app_logger.dart';
 
-import 'package:verbisense/core/providers/providers.dart';
+import 'package:verbisense/core/config/app_logger.dart';
+import 'package:verbisense/core/providers/drawer_provider.dart';
 import 'package:verbisense/core/resources/strings/drawer_strings.dart';
 import 'package:verbisense/core/themes/colors.dart';
 import 'package:verbisense/core/themes/fonts.dart';
