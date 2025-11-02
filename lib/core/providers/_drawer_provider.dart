@@ -82,7 +82,9 @@ class DrawerNotifier extends StateNotifier<DrawerState> {
     this._getChatHistories,
     this._uploadFile,
     this._deleteFile,
-  ) : super(const DrawerState.initial());
+  ) : super(const DrawerState.initial()) {
+    loadDrawerData();
+  }
   final GetUploadedFiles _getUploadedFiles;
   final GetChatHistory _getChatHistories;
   final UploadFile _uploadFile;

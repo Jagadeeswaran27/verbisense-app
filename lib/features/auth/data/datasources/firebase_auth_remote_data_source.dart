@@ -10,7 +10,7 @@ import 'package:verbisense/core/error/google_signin_error_code.dart';
 import 'package:verbisense/core/resources/strings/firebase_error_strings.dart';
 import 'package:verbisense/features/auth/data/models/user_model.dart';
 
-abstract class FirebaseRemoteDataSource {
+abstract class FirebaseAuthRemoteDataSource {
   Future<UserModel> createUserWithEmailAndPassword(
     String name,
     String email,
@@ -21,19 +21,20 @@ abstract class FirebaseRemoteDataSource {
     String password,
   );
   Future<UserModel> signInWithGoogle();
-  Future<UserModel?> getCurrentUser();
-  Future<void> signOut();
-  Stream<User?> userAuthStateChanges();
-  Future<bool> updateFcmToken(String token);
 }
 
-class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
+class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
   final FirebaseAuth firebaseAuth;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  final FirebaseFunctions _firebaseFunctions = FirebaseFunctions.instance;
+  final FirebaseFirestore _firestore;
+  final GoogleSignIn _googleSignIn;
+  final FirebaseFunctions _firebaseFunctions;
 
-  FirebaseRemoteDataSourceImpl(this.firebaseAuth);
+  FirebaseAuthRemoteDataSourceImpl(
+    this.firebaseAuth,
+    this._firestore,
+    this._googleSignIn,
+    this._firebaseFunctions,
+  );
 
   static String getFirebaseError(FirebaseException e) {
     final errorCode = FirebaseErrorCodeX.fromCode(e.code);
@@ -63,6 +64,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       final HttpsCallable callable = _firebaseFunctions.httpsCallable(
         'createUser',
       );
+
       final result = await callable.call({
         'email': email,
         'password': password,
@@ -146,6 +148,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
           uid: user.uid,
           email: user.email ?? '',
           name: user.displayName ?? '',
+          photoURL: user.photoURL,
         );
         await _firestore
             .collection("users")
@@ -159,59 +162,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     } on FirebaseAuthException catch (e) {
       AppLogger.e(e.code);
       throw ServerException(getFirebaseError(e));
-    } catch (e) {
-      AppLogger.e(e.toString());
-      throw ServerException(e.toString());
-    }
-  }
-
-  @override
-  Future<UserModel?> getCurrentUser() async {
-    try {
-      final user = firebaseAuth.currentUser;
-      if (user == null) {
-        throw const ServerException(FirebaseErrorStrings.userDataIsNull);
-      }
-      AppLogger.i('Current User UID: ${user.uid}');
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      if (!userDoc.exists) {
-        throw const ServerException(FirebaseErrorStrings.userDataNotFound);
-      }
-      AppLogger.i('User Document Data: ${userDoc.data().toString()}');
-      return UserModel.fromJson(userDoc.data()!);
-    } catch (e) {
-      AppLogger.e(e.toString());
-      throw ServerException(e.toString());
-    }
-  }
-
-  @override
-  Stream<User?> userAuthStateChanges() {
-    return firebaseAuth.authStateChanges().map((user) => user);
-  }
-
-  @override
-  Future<void> signOut() {
-    try {
-      return firebaseAuth.signOut();
-    } catch (e) {
-      AppLogger.e(e.toString());
-      throw ServerException(e.toString());
-    }
-  }
-
-  @override
-  Future<bool> updateFcmToken(String token) async {
-    try {
-      final user = firebaseAuth.currentUser;
-      if (user == null) {
-        throw const ServerException(FirebaseErrorStrings.userDataIsNull);
-      }
-      final userDoc = _firestore.collection('users').doc(user.uid);
-      await userDoc.update({
-        'fcmToken': FieldValue.arrayUnion([token]),
-      });
-      return true;
     } catch (e) {
       AppLogger.e(e.toString());
       throw ServerException(e.toString());

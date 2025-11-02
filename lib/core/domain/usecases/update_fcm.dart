@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
 
+import 'package:verbisense/core/domain/repository/firebase_auth_core_repository.dart';
 import 'package:verbisense/core/error/failures.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
-import 'package:verbisense/features/auth/domain/repository/firebase_auth_repository.dart';
 
 class UpdateFcm implements Usecase<bool, String> {
-  final FirebaseAuthRepository repository;
+  final FirebaseAuthCoreRepository repository;
 
   UpdateFcm(this.repository);
 

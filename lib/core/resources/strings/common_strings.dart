@@ -78,4 +78,9 @@ class CommonStrings {
   static const String history = 'History';
   static const String today = 'Today';
   static const String maxFilesUploaded = 'Max 3 files can be uploaded';
+  static const String accountSettings = 'Account Settings';
+  static const String personalInformation = 'Personal Information';
+  static const String deleting = 'Deleting...';
+  static const String name = 'Name';
+  static const String nameCannotBeEmpty = 'Name cannot be empty';
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:verbisense/core/resources/strings/common_strings.dart';
+import 'package:verbisense/core/router/app_routes.dart';
+import 'package:verbisense/core/utils/navigation.dart';
 
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({
@@ -14,38 +16,7 @@ class SettingsDrawer extends StatelessWidget {
 
   void navigateToAccount(BuildContext context) {
     closeSettingsDrawer();
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const Placeholder(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const curve = Curves.easeInOut;
-
-          // Define a scale transition
-          final scaleTween = Tween<double>(
-            begin: 0.8,
-            end: 1.0,
-          ).chain(CurveTween(curve: curve));
-          final scaleAnimation = animation.drive(scaleTween);
-
-          // Define a fade transition
-          final opacityTween = Tween<double>(
-            begin: 0.0,
-            end: 1.0,
-          ).chain(CurveTween(curve: curve));
-          final opacityAnimation = animation.drive(opacityTween);
-
-          return FadeTransition(
-            opacity: opacityAnimation,
-            child: ScaleTransition(
-              scale: scaleAnimation,
-              child: child,
-            ),
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 500),
-      ),
-    );
+    pushToScreen(context, AppRoutes.account.path);
   }
 
   @override

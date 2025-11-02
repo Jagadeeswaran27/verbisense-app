@@ -4,23 +4,23 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:verbisense/core/providers/auth_core_provider.dart';
 
 import 'package:verbisense/core/router/app_routes.dart';
-import 'package:verbisense/features/auth/presentation/provider/auth_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: AppRoutes.init.path,
     routes: AppRoutes.values.map((e) => e.route).toList(),
     refreshListenable: GoRouterRefreshStream(
-      ref.watch(authProvider.notifier).stream,
+      ref.watch(authCoreProvider.notifier).stream,
     ),
     redirect: (context, state) {
-      final authState = ref.read(authProvider);
-      final isAuthenticated = authState is AuthSuccess;
+      final authState = ref.read(authCoreProvider);
+      final isAuthenticated = authState is AuthCoreSuccess;
       final isOnAuthPage = _checkIsOnAuthPage(state.fullPath);
 
-      if (authState is AuthLoading) {
+      if (authState is AuthCoreLoading) {
         return AppRoutes.loading.path;
       }
 

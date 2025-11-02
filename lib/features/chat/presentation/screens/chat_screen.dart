@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verbisense/core/providers/auth_core_provider.dart';
 
-import 'package:verbisense/core/providers/providers.dart';
 import 'package:verbisense/core/widgets/common/custom_app_bar.dart';
 import 'package:verbisense/core/widgets/common/settings_drawer.dart';
-import 'package:verbisense/features/auth/presentation/provider/auth_provider.dart';
 import 'package:verbisense/features/chat/presentation/widgets/chat_input.dart';
 import 'package:verbisense/features/drawer/presentation/widgets/custom_drawer.dart';
 
@@ -32,19 +31,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _handleSignOut() {
-    ref.read(authProvider.notifier).signOut();
+    ref.read(authCoreProvider.notifier).signOut();
   }
 
   void _handlePostLogin() {
-    ref.read(authProvider.notifier).askNotificationPermission();
+    ref.read(authCoreProvider.notifier).askNotificationPermission();
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(drawerNotifierProvider.notifier).loadDrawerData();
-    });
     _handlePostLogin();
   }
 

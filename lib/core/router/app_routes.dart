@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:verbisense/features/about_us/presentation/screens/about_us_screen.dart';
+import 'package:verbisense/features/account/presentation/screens/account_screen.dart';
 import 'package:verbisense/features/auth/presentation/screens/get_started_screen.dart';
 import 'package:verbisense/features/auth/presentation/screens/init_screen.dart';
 import 'package:verbisense/features/auth/presentation/screens/login_screen.dart';
@@ -18,6 +19,7 @@ enum AppRoutes {
   signup,
   chat,
   aboutUs,
+  account,
 }
 
 extension AppRoutesExtension on AppRoutes {
@@ -29,6 +31,7 @@ extension AppRoutesExtension on AppRoutes {
     AppRoutes.login: '/login',
     AppRoutes.chat: '/chat',
     AppRoutes.aboutUs: '/about-us',
+    AppRoutes.account: '/account',
   };
 
   static const Map<AppRoutes, String> _names = {
@@ -39,6 +42,7 @@ extension AppRoutesExtension on AppRoutes {
     AppRoutes.login: 'login',
     AppRoutes.chat: 'chat',
     AppRoutes.aboutUs: 'aboutUs',
+    AppRoutes.account: 'account',
   };
 
   static const Map<AppRoutes, Widget Function()> _builders = {
@@ -49,6 +53,7 @@ extension AppRoutesExtension on AppRoutes {
     AppRoutes.signup: SignupScreen.new,
     AppRoutes.chat: ChatScreen.new,
     AppRoutes.aboutUs: AboutUsScreen.new,
+    AppRoutes.account: AccountScreen.new,
   };
 
   String get path => _paths[this]!;

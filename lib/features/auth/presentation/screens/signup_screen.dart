@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:verbisense/core/widgets/common/focus_dismissable.dart';
 import 'package:verbisense/core/widgets/common/svg_loader.dart';
 import 'package:verbisense/core/resources/strings/common_strings.dart';
 import 'package:verbisense/core/resources/regex.dart';
@@ -82,9 +83,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     });
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => FocusScope.of(context).unfocus(),
+      body: FocusDismissible(
         child: Center(
           child: SizedBox(
             width: screenSize.width * 0.85,

@@ -1,15 +1,15 @@
 import 'package:verbisense/core/entities/user.dart';
 
-class UserModel extends User {
-  UserModel({
+class CoreUserModel extends User {
+  CoreUserModel({
     required super.uid,
     required super.email,
     required super.name,
-    super.photoURL,
+    required super.photoURL,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory CoreUserModel.fromJson(Map<String, dynamic> json) {
+    return CoreUserModel(
       uid: json['uid'] as String,
       email: json['email'] as String,
       name: json['name'] as String,
@@ -17,13 +17,13 @@ class UserModel extends User {
     );
   }
 
-  UserModel copyWith({
+  CoreUserModel copyWith({
     String? id,
     String? email,
     String? name,
     String? photoURL,
   }) {
-    return UserModel(
+    return CoreUserModel(
       uid: id ?? uid,
       email: email ?? this.email,
       name: name ?? this.name,
@@ -36,7 +36,6 @@ class UserModel extends User {
       'uid': uid,
       'email': email,
       'name': name,
-      'photoURL': photoURL,
     };
   }
 }

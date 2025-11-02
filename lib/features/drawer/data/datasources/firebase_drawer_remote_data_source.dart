@@ -18,10 +18,14 @@ abstract class FirebaseDrawerRemoteDataSource {
 class FirebaseDrawerRemoteDataSourceImpl
     implements FirebaseDrawerRemoteDataSource {
   final FirebaseAuth firebaseAuth;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore;
+  final FirebaseStorage _firebaseStorage;
 
-  FirebaseDrawerRemoteDataSourceImpl(this.firebaseAuth);
+  FirebaseDrawerRemoteDataSourceImpl(
+    this.firebaseAuth,
+    this._firestore,
+    this._firebaseStorage,
+  );
 
   @override
   Future<List<String>> getUploadedFiles() async {
