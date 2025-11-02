@@ -106,7 +106,7 @@ class _ChangePasswordWidgetState extends ConsumerState<ChangePasswordWidget> {
               }
               return null;
             },
-            suffixIcon: _isCurrentPasswordVisible
+            suffixIcon: _isNewPasswordVisible
                 ? const Icon(Icons.visibility_off_outlined)
                 : const Icon(Icons.remove_red_eye_outlined),
             onIconTap: _toggleNewPasswordVisibility,
