@@ -10,7 +10,7 @@ import 'package:verbisense/features/drawer/domain/usecases/delete_file.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_chat_history.dart';
 import 'package:verbisense/features/drawer/domain/usecases/get_uploaded_files.dart';
 import 'package:verbisense/features/drawer/domain/usecases/upload_file.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class DrawerState {
   const DrawerState();

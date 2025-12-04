@@ -1,9 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:verbisense/core/providers/auth_core_provider.dart';
 import 'package:verbisense/features/account/domain/usecases/update_user_name.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class UpdateUserNameState {
   const UpdateUserNameState();

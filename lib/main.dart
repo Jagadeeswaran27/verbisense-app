@@ -8,7 +8,7 @@ import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/resources/strings/common_strings.dart';
 import 'package:verbisense/core/router/go_router.dart';
 import 'package:verbisense/core/themes/app_theme.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 void main() async {
   AppLogger.i('App Started!');

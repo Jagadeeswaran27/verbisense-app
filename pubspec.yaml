@@ -40,6 +40,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
@@ -66,12 +67,17 @@ flutter:
           weight: 300
 
 
-# flutter_native_splash:
-#   color: "#FFFFFF"
-#   image: assets/images/white.png
-#   android: true
-#   ios: true
-#   web: false
-#   android_12:
-#     color: "#FFFFFF"
-#     image: assets/images/white.png
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/icons/splash.png
+  android: true
+  ios: true
+  web: false
+  android_12:
+    color: "#FFFFFF"
+    image: assets/icons/splash.png
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"

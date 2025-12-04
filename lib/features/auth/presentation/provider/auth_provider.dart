@@ -10,7 +10,7 @@ import 'package:verbisense/features/auth/data/models/user_model.dart';
 import 'package:verbisense/features/auth/domain/usecases/create_user.dart';
 import 'package:verbisense/features/auth/domain/usecases/email_signin.dart';
 import 'package:verbisense/features/auth/domain/usecases/google_signin.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class AuthState {
   const AuthState();

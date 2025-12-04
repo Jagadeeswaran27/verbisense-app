@@ -14,7 +14,7 @@ import 'package:verbisense/core/domain/usecases/update_fcm.dart';
 import 'package:verbisense/core/entities/user.dart';
 import 'package:verbisense/core/providers/app_reset_provider.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class AuthCoreState {
   const AuthCoreState();

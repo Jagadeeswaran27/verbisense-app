@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:verbisense/core/config/app_logger.dart';
 import 'package:verbisense/core/usecase/usecase.dart';
 import 'package:verbisense/features/account/domain/usecases/get_user_provider_info.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class ProviderInfoState {
   const ProviderInfoState();

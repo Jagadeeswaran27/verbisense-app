@@ -6,6 +6,7 @@ import 'package:verbisense/core/providers/auth_core_provider.dart';
 import 'package:verbisense/core/widgets/common/custom_app_bar.dart';
 import 'package:verbisense/core/widgets/common/settings_drawer.dart';
 import 'package:verbisense/features/chat/presentation/widgets/chat_input.dart';
+import 'package:verbisense/features/chat/presentation/widgets/welcome_message.dart';
 import 'package:verbisense/features/drawer/presentation/widgets/custom_drawer.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -62,6 +63,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             Column(
               children: [
+                Expanded(
+                  child: WelcomeMessage(),
+                ),
                 // Expanded(
                 //   child: widget.chatMessages.isEmpty
                 //       ? const WelcomeStringWidget()
@@ -70,9 +74,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 //           chatMessages: widget.chatMessages,
                 //         ),
                 // ),
-                Expanded(
-                  child: Container(), // Placeholder for chat messages
-                ),
                 ChatInput(
                   sendChatData: (String s) {},
                 ),

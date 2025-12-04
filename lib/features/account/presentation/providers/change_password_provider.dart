@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:verbisense/features/account/domain/usecases/change_password.dart';
-import 'package:verbisense/init_dependencies.main.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class ChangePasswordState {
   const ChangePasswordState();
