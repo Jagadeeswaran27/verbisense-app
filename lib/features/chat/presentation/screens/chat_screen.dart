@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verbisense/core/providers/auth_core_provider.dart';
 
+import 'package:verbisense/core/providers/auth_core_provider.dart';
+import 'package:verbisense/core/widgets/common/app_drawer.dart';
 import 'package:verbisense/core/widgets/common/custom_app_bar.dart';
 import 'package:verbisense/core/widgets/common/settings_drawer.dart';
+import 'package:verbisense/features/chat/presentation/widgets/chat_display_widget.dart';
 import 'package:verbisense/features/chat/presentation/widgets/chat_input.dart';
-import 'package:verbisense/features/chat/presentation/widgets/welcome_message.dart';
-import 'package:verbisense/features/drawer/presentation/widgets/custom_drawer.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -50,7 +50,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return Scaffold(
       appBar: CustomAppBar(toggleSettingsDrawer: _toggleSettingsDrawer),
       drawer: Drawer(
-        child: CustomDrawer(),
+        child: AppDrawer(),
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -64,19 +64,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Column(
               children: [
                 Expanded(
-                  child: WelcomeMessage(),
+                  child: ChatDataDisplayWidget(),
                 ),
-                // Expanded(
-                //   child: widget.chatMessages.isEmpty
-                //       ? const WelcomeStringWidget()
-                //       : ChatDataDisplayWidget(
-                //           isSending: widget.isSending,
-                //           chatMessages: widget.chatMessages,
-                //         ),
-                // ),
-                ChatInput(
-                  sendChatData: (String s) {},
-                ),
+                ChatInput(),
               ],
             ),
             if (_isSettingsDrawerOpen)

@@ -4,11 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:verbisense/core/error/exceptions.dart';
 import 'package:verbisense/core/error/firebase_error_code.dart';
 import 'package:verbisense/core/resources/strings/firebase_error_strings.dart';
-import 'package:verbisense/core/utils/helper.dart';
-import 'package:verbisense/features/drawer/data/models/chat_model.dart';
+import 'package:verbisense/features/chat/data/models/chat_model.dart';
 
 abstract class FirebaseChatRemoteDataSource {
-  Future<List<ChatModel>> getChatData(String? date);
+  Future<List<ChatModel>> getChatData(String date);
 }
 
 class FirebaseChatRemoteDataSourceImpl implements FirebaseChatRemoteDataSource {
@@ -30,7 +29,7 @@ class FirebaseChatRemoteDataSourceImpl implements FirebaseChatRemoteDataSource {
   }
 
   @override
-  Future<List<ChatModel>> getChatData(String? date) async {
+  Future<List<ChatModel>> getChatData(String date) async {
     try {
       final user = _firebaseAuth.currentUser;
 
@@ -38,8 +37,7 @@ class FirebaseChatRemoteDataSourceImpl implements FirebaseChatRemoteDataSource {
         throw const ServerException('User not authenticated');
       }
 
-      String todayDate = formatDateAsString();
-      String queryDate = date ?? todayDate;
+      String queryDate = date;
 
       CollectionReference messagesCollectionRef = _firestore
           .collection('users')

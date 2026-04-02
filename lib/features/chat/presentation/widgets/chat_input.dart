@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:verbisense/core/resources/strings/common_strings.dart';
 import 'package:verbisense/core/themes/colors.dart';
+import 'package:verbisense/features/chat/presentation/providers/chat_data_provider.dart';
+import 'package:verbisense/features/file_management/presentation/providers/file_management_provider.dart';
 
-class ChatInput extends StatefulWidget {
-  const ChatInput({
-    super.key,
-    required this.sendChatData,
-  });
-
-  final void Function(String message) sendChatData;
+class ChatInput extends ConsumerStatefulWidget {
+  const ChatInput({super.key});
 
   @override
-  State<ChatInput> createState() => _ChatInputState();
+  ConsumerState<ChatInput> createState() => _ChatInputState();
 }
 
-class _ChatInputState extends State<ChatInput> {
+class _ChatInputState extends ConsumerState<ChatInput> {
   final TextEditingController _controller = TextEditingController();
 
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {
-      widget.sendChatData(_controller.text);
-      _controller.clear();
+      final fileManageState = ref.watch(fileManagementNotifierProvider);
+
+      if (fileManageState is LoadedFileManagementState) {
+        final files = fileManageState.files;
+        ref
+            .watch(chatDataNotifierProvider.notifier)
+            .sendMessage(_controller.text, files);
+
+        _controller.clear();
+      }
     }
   }
 

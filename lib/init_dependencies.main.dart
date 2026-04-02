@@ -17,9 +17,10 @@ Future<void> initDependencies() async {
 
   _initCore();
   _initAuth();
-  _initDrawer();
   _initAccount();
   _initChat();
+  _initChatHistory();
+  _initFileManagement();
 }
 
 void _initCore() {
@@ -68,32 +69,6 @@ void _initAuth() {
     );
 }
 
-void _initDrawer() {
-  serviceLocator
-    ..registerFactory<FirebaseDrawerRemoteDataSource>(
-      () => FirebaseDrawerRemoteDataSourceImpl(
-        serviceLocator<FirebaseAuth>(),
-        serviceLocator<FirebaseFirestore>(),
-        serviceLocator<FirebaseStorage>(),
-      ),
-    )
-    ..registerFactory<FirebaseDrawerRepository>(
-      () => FirebaseDrawerRepositoryImpl(serviceLocator()),
-    )
-    ..registerFactory<GetUploadedFiles>(
-      () => GetUploadedFiles(serviceLocator()),
-    )
-    ..registerFactory<GetChatHistory>(
-      () => GetChatHistory(serviceLocator()),
-    )
-    ..registerFactory<UploadFile>(
-      () => UploadFile(serviceLocator()),
-    )
-    ..registerFactory<DeleteFile>(
-      () => DeleteFile(serviceLocator()),
-    );
-}
-
 void _initAccount() {
   serviceLocator
     ..registerFactory<FirebaseAccountRemoteDatasource>(
@@ -124,10 +99,59 @@ void _initChat() {
         serviceLocator<FirebaseAuth>(),
       ),
     )
+    ..registerFactory<ApiChatRemoteDatasource>(
+      () => ApiChatRemoteDatasourceImpl(),
+    )
     ..registerFactory<FirebaseChatRepository>(
-      () => FirebaseChatRepositoryImpl(serviceLocator()),
+      () => FirebaseChatRepositoryImpl(
+        serviceLocator<FirebaseChatRemoteDataSource>(),
+        serviceLocator<ApiChatRemoteDatasource>(),
+      ),
     )
     ..registerFactory<GetChatData>(
       () => GetChatData(serviceLocator()),
+    )
+    ..registerFactory<SendMessage>(
+      () => SendMessage(serviceLocator()),
+    );
+}
+
+void _initChatHistory() {
+  serviceLocator
+    ..registerFactory<FirebaseChatHistoryRemoteDatasource>(
+      () => FirebaseChatHistoryRemoteDatasourceImpl(
+        serviceLocator<FirebaseAuth>(),
+        serviceLocator<FirebaseFirestore>(),
+      ),
+    )
+    ..registerFactory<FirebaseChatHistoryRepository>(
+      () => FirebaseChatHistoryRepositoryImpl(
+        serviceLocator<FirebaseChatHistoryRemoteDatasource>(),
+      ),
+    )
+    ..registerFactory<GetChatHistory>(
+      () => GetChatHistory(serviceLocator()),
+    );
+}
+
+void _initFileManagement() {
+  serviceLocator
+    ..registerFactory<FirebaseFileRemoteDatasource>(
+      () => FirebaseFileRemoteDatasourceImpl(
+        serviceLocator<FirebaseAuth>(),
+        serviceLocator<FirebaseStorage>(),
+      ),
+    )
+    ..registerFactory<FirebaseFileRepository>(
+      () => FirebaseFileRepositoryImpl(serviceLocator()),
+    )
+    ..registerFactory<GetUploadedFiles>(
+      () => GetUploadedFiles(serviceLocator()),
+    )
+    ..registerFactory<UploadFile>(
+      () => UploadFile(serviceLocator()),
+    )
+    ..registerFactory<DeleteFile>(
+      () => DeleteFile(serviceLocator()),
     );
 }

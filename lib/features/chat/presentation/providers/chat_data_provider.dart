@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:verbisense/core/utils/helper.dart';
 
+import 'package:verbisense/core/utils/helper.dart';
+import 'package:verbisense/features/chat/data/models/chat_model.dart';
 import 'package:verbisense/features/chat/domain/usecases/get_chat_data.dart';
-import 'package:verbisense/features/drawer/data/models/chat_model.dart';
+import 'package:verbisense/features/chat/domain/usecases/send_message.dart';
+import 'package:verbisense/init_dependencies.dart';
 
 sealed class ChatDataState {
   const ChatDataState();
@@ -35,13 +37,15 @@ class ChatDataError extends ChatDataState {
 
 class ChatDataNotifier extends StateNotifier<ChatDataState> {
   final GetChatData getChatDataUsecase;
+  final SendMessage sendMessageUsecase;
 
-  ChatDataNotifier(this.getChatDataUsecase) : super(ChatDataState.initial()) {
+  ChatDataNotifier(this.getChatDataUsecase, this.sendMessageUsecase)
+    : super(ChatDataState.initial()) {
     String todayDate = formatDateAsString();
     fetchChatData(todayDate);
   }
 
-  Future<void> fetchChatData(String? date) async {
+  Future<void> fetchChatData(String date) async {
     state = ChatDataState.loading();
 
     final result = await getChatDataUsecase(date);
@@ -55,4 +59,30 @@ class ChatDataNotifier extends StateNotifier<ChatDataState> {
       },
     );
   }
+
+  Future<void> sendMessage(String query, List<String> files) async {
+    state = ChatDataState.loading();
+
+    final result = await sendMessageUsecase(
+      SendMessageParams(query: query, files: files),
+    );
+
+    result.fold(
+      (failure) {
+        state = ChatDataState.error(failure.message);
+      },
+      (chatData) {
+        // TODO: Add chat data to existing list
+        // state = ChatDataState.loaded(chatData);
+      },
+    );
+  }
 }
+
+final chatDataNotifierProvider =
+    StateNotifierProvider<ChatDataNotifier, ChatDataState>((ref) {
+      return ChatDataNotifier(
+        serviceLocator(),
+        serviceLocator(),
+      );
+    });
